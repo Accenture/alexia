@@ -37,7 +37,7 @@
   "engines": {
     "node": ">=4.2.0"
   },
-  "license": "Apache-2.0",
+  "license": "MIT",
   "files": [
     "LICENSE",
     "README.md",
