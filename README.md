@@ -20,7 +20,7 @@ app.intent('HelloIntent', 'Hello', () => {
 
 ## Overview
 
-Alexia helps you to write Amazon Echo skills using Node.js. This framework handles Amazon Echo requests and automatically calls intents in your application. See the full list of [Features](## Features)
+Alexia helps you to write Amazon Echo skills using Node.js. This framework handles Amazon Echo requests and automatically calls intents in your application. See the [Features and Samples](#features-and-samples)
 
 ## Terminology
 
@@ -33,7 +33,7 @@ Creating new skills for Amazon Echo using alexia requires you to understand some
 - **Session Attributes** - data persisted through the session
 - **Cards** - visual output displayed in [Alexa app](http://alexa.amazon.com/)
 
-## Features and samples
+## Features and Samples
 
 ### Create App
 
@@ -78,7 +78,7 @@ app.builtInIntent('stop', ['Stop now', 'Please stop'], () => 'Stopping now');
 
 ### Slots
 
-As mentioned in [Terminology section](## Terminology) - slots represent variable part of user input in utterances. To make their creation bit easier our utterances contain slot name with type. These samples are converted into common utterances recognized by Alexa and slots are included in intentSchema.
+As mentioned in [Terminology](#terminology) section - slots represent variable part of user input in utterances. To make their creation bit easier our utterances contain slot name with type. These samples are converted into common utterances recognized by Alexa and slots are included in intentSchema.
 
 ```javascript
 app.intent('SlotIntent', 'My number is {num:Number}', (slots) => {
@@ -88,7 +88,7 @@ app.intent('SlotIntent', 'My number is {num:Number}', (slots) => {
 
 ### Custom Slots
 
-Alexia enables you to create custom slots by specifying its `name` and `utterances`
+Alexia helps you to create custom slots by specifying its `name` and `utterances`
 
 ```javascript
 app.customSlot('Name', ['Arnold', 'Otto', 'Walda', 'Pete']);
@@ -194,7 +194,7 @@ server.start((err) => {
 To minimize manual work needed while deploying your Alexa skills you can use our speechAssets generator. This helps you to create `intentSchema`, `sampleUtterances` and `customSlots` for your apps.
 
 Speech assets consists of:
-  - *intenSchema.json* -  map of intents and their slots
+  - *intentSchema.json* -  map of intents and their slots
   - *customSlotTypes* - custom slots that are not part of biuld-in slots. It is recommended to use it when the value is from some set of values (e.g. Sign of Zodiac)
   - *sampleUtterances* - phrases that are used to invoke intents
 
@@ -210,7 +210,7 @@ console.log(assets.customSlots);
 
 ### Actions
 
-Feature of alexia that enables you to control flow of the intents. To understand it easier see the code below.
+Feature of Alexia that helps you to control flow of the intents. To understand it easier see the code below.
 
 By defining the action you enable transition from one intent to another. When no actions are specified, every intent transition is allowed.
 
@@ -245,7 +245,7 @@ app.defaultActionFail(() => 'Sorry, your request is invalid');
 
 ### Deploy
 
-- Implement server handler on POST endpoint. See [Handling Amazon Requests](### Handling Amazon Requests)
+- Implement server handler on POST endpoint. See [Handling Amazon Requests](#handling-amazon-requests)
 - Deploy application on public secured endpoint. For example:
     - [Heroku](https://www.heroku.com)
     - [AWS](https://aws.amazon.com)
@@ -331,11 +331,11 @@ app.handle(launchRequest, (response) => {
 - `npm run lint` - run eslint
 - `npm run lint:fix` - run eslint and automatically fix problems
 
-For more information refer to guide [Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/)
-
 ## Contributing
 
 Alexia is an open source project and we encourage contributions. Please make sure to cover your code with unit tests
+
+For more information refer to general guide [Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/)
 
 ## License
 
