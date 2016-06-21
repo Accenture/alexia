@@ -1,0 +1,59 @@
+{
+  "name": "alexia",
+  "version": "1.0.0",
+  "description": "A Framework for creating Amazon Echo (Alexa) skills using Node.js",
+  "main": "src/alexia.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Accenture/alexia.git"
+  },
+  "author": {
+    "name": "Matthew D. Lancaster",
+    "email": "matthew.d.lancaster@accenture.com",
+    "url": "https://www.accenture.com/us-en"
+  },
+  "contributors": [
+    "Slavomir Kubacka <slavomir.kubacka@accenture.com>",
+    "Michal Morvay <michal.morvay@accenture.com",
+    "Michael Gloger <michael.gloger@accenture.com>"
+  ],
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
+    "test": "istanbul cover node_modules/mocha/bin/_mocha -- -u exports --reporter spec",
+    "test:dev": "nodemon --exec \"mocha || true\""
+  },
+  "dependencies": {
+    "bases": "^0.2.1",
+    "lodash": "^4.13.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^2.13.0",
+    "istanbul": "^0.4.3",
+    "mocha": "^2.5.3",
+    "nodemon": "^1.9.2"
+  },
+  "engines": {
+    "node": ">=4.2.0"
+  },
+  "license": "Apache-2.0",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "src/"
+  ],
+  "keywords": [
+    "alexa",
+    "alexia",
+    "echo",
+    "amazon",
+    "voice",
+    "skill",
+    "intent"
+  ],
+  "bugs": {
+    "url": "https://github.com/Accenture/alexia/issues",
+    "email": "michael.gloger@accenture.com"
+  }
+}

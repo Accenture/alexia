@@ -1,0 +1,39 @@
+{
+  "ecmaFeatures": {
+    "arrowFunctions": true,
+    "blockBindings": true,
+    "classes": true,
+    "defaultParams": true,
+    "forOf": true,
+    "generators": true,
+    "modules": false,
+    "templateStrings": true
+  },
+  "env": {
+      "node": true,
+      "es6": true
+  },
+  "globals": {
+    "module": true,
+    "console": true,
+    "process": true,
+    "require": true,
+    "__dirname": true,
+    "Promise": true, // So we can override it with npm package 'promise'
+    "describe": true,
+    "it": true
+  },
+  "rules": {
+    "strict": [
+      2,
+      "global"
+    ],
+    "no-underscore-dangle": 0,
+    "no-undef": 2,
+    "no-unused-vars": 0,
+    "quotes": [
+      2,
+      "single"
+    ]
+  }
+}

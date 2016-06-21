@@ -1,0 +1,5 @@
+*.idea
+*.log
+node_modules
+speechAssets
+coverage
