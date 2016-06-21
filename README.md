@@ -4,6 +4,7 @@ A Framework for creating Amazon Echo (Alexa) skills using Node.js
 
   [![NPM Version][npm-image]][npm-url]
   [![Build Status][travis-image]][travis-url]
+  [![Coverage Status][coveralls-image]][coveralls-url]
 
 ```javascript
 const alexia = require('alexia');
@@ -345,3 +346,5 @@ For more information refer to general guide [Contributing to Open Source](https:
   [npm-url]: https://npmjs.org/package/alexia
   [travis-image]: https://img.shields.io/travis/Accenture/alexia/master.svg
   [travis-url]: https://travis-ci.org/Accenture/alexia
+  [coveralls-image]: https://coveralls.io/repos/github/Accenture/alexia/badge.svg?branch=master
+  [coveralls-url]: https://coveralls.io/github/Accenture/alexia?branch=master

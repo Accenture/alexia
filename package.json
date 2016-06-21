@@ -21,6 +21,7 @@
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "test": "istanbul cover node_modules/mocha/bin/_mocha -- -u exports --reporter spec",
+    "test-lcov": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- -u exports --reporter spec",
     "test:dev": "nodemon --exec \"mocha || true\""
   },
   "dependencies": {
