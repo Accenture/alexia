@@ -175,11 +175,16 @@ const Hapi = require('hapi');
 const server = new Hapi.Server();
 const app = require('./app'); // Your app
 
+server.connection({
+    port: process.env.PORT || 8888
+});
+
 server.route({
+    path: '/',
     method: 'POST',
     handler: (request, response) => {
-        app.handle(request.body, (data) => {
-            response.json(data);
+        app.handle(request.payload, (data) => {
+            response(data);
         });
     }
 });
@@ -272,7 +277,7 @@ app.defaultActionFail(() => 'Sorry, your request is invalid');
         - Do this for each custom slot
     - Intent Schema: enter value of `assets.intentSchema`
     - Sample Utterances: enter value of `assets.sampleUtterances`
-    
+
   **Configuration**
     - Endpoint: select HTTPS and enter url or your publicly accesible server
 
@@ -321,7 +326,7 @@ app.handle(launchRequest, (response) => {
 - Generate API documentation
 - Add API to save speechAssets to file
 - Add more cards options (images etc.)
-- Merge session attributes automatically 
+- Merge session attributes automatically
 - Advanced error handling
 - Logging
 
