@@ -175,6 +175,7 @@ Speech assets consists of:
   - **utterances** - phrases that are used to invoke intents
   - **customSlots** - custom slot types with samples
 
+
  For more information see [interaction model reference](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interaction-model-reference)
 
 ```javascript
