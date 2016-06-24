@@ -1,6 +1,6 @@
 'use strict';
 const alexia = require('..');
-const app = alexia.createApp('GenerateSpeechAssetsExample');
+const app = alexia.createApp('SpeechAssetsExample');
 
 app.customSlot('Mood', ['fine', 'meh']);
 
@@ -12,10 +12,7 @@ app.intent('AwesomeIntent', 'You are awesome', (slots, attrs) => {
     return 'Yes';
 });
 
-const assets = app.generateSpeechAssets();
-
-console.log(assets.intentSchema);
-console.log(assets.sampleUtterances);
-console.log(assets.customSlotSamples);
+const assets = app.speechAssets();
+console.log(speechAssets.toString());
 
 module.exports = app;

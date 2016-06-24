@@ -129,8 +129,8 @@ module.exports = (name, options) => {
     /**
      * Generates speech assets object: {schema, utterances, customSlots}
      */
-    app.generateSpeechAssets = () => {
-       return generateSpeechAssets(app);
+    app.speechAssets = () => {
+        return generateSpeechAssets(app);
     };
 
     return app;

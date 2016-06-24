@@ -166,6 +166,22 @@ app.intent('AsyncIntent', 'Search for something in database', (slots, attrs, don
 });
 ```
 
+### Generate Speech Assets
+
+To minimize manual work needed while deploying your Alexa skills you can use our speechAssets generator. This helps you to create `intentSchema`, `sampleUtterances` and `customSlots` for your apps.
+
+Speech assets consists of:
+  - **intentSchema** - array of intents with slots
+  - **utterances** - phrases that are used to invoke intents
+  - **customSlots** - custom slot types with samples
+
+ For more information see [interaction model reference](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interaction-model-reference)
+
+```javascript
+const speechAssets = app.speechAssets(); // object
+console.log(speechAssets.toString()); // stringified version - f.e. copy paste from console
+```
+
 ### Handling Amazon Requests
 
 To handle Amazon requests you need to create HTTP server with POST route. See below example with [Hapi](http://hapijs.com/) server
@@ -192,26 +208,10 @@ server.route({
 server.start((err) => {
     if (err) throw err;
     console.log('Server running at:', server.info.uri);
+
+    const speechAssets = app.speechAssets();
+    console.log(speechAssets.toString());
 });
-```
-
-### Generate Speech Assets
-
-To minimize manual work needed while deploying your Alexa skills you can use our speechAssets generator. This helps you to create `intentSchema`, `sampleUtterances` and `customSlots` for your apps.
-
-Speech assets consists of:
-  - *intentSchema.json* -  map of intents and their slots
-  - *customSlotTypes* - custom slots that are not part of biuld-in slots. It is recommended to use it when the value is from some set of values (e.g. Sign of Zodiac)
-  - *sampleUtterances* - phrases that are used to invoke intents
-
- For more information see [interaction model reference](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interaction-model-reference)
-
-```javascript
-const assets = app.generateSpeechAssets();
-
-console.log(assets.intentSchema);
-console.log(assets.sampleUtterances);
-console.log(assets.customSlots);
 ```
 
 ### Actions
@@ -329,6 +329,7 @@ app.handle(launchRequest, (response) => {
 - Merge session attributes automatically
 - Advanced error handling
 - Logging
+- Add more sophisticated request creator for unit testing
 
 ## Scripts
 

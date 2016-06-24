@@ -4,7 +4,7 @@ const expect = require('chai').expect;
 const app = require('./test-apps/basic-app');
 
 describe('generateSpeechAssets', () => {
-    const assets = app.generateSpeechAssets();
+    const assets = app.speechAssets();
 
     it('should generate intentSchema', () => {
          expect(JSON.parse(assets.intentSchema)).to.deep.equal({
@@ -31,8 +31,8 @@ describe('generateSpeechAssets', () => {
          });
     });
 
-    it('should generate sampleUtterances', () => {
-        expect(assets.sampleUtterances.split('\n')).to.deep.equal([
+    it('should generate utterances', () => {
+        expect(assets.utterances.split('\n')).to.deep.equal([
             'FirstIntent utterance',
             'NamedIntent utteranceB',
             'NamedIntent utteranceC',
@@ -50,10 +50,17 @@ describe('generateSpeechAssets', () => {
         ]);
     });
 
-    it('should generate customSlotSamples', () => {
-        expect(assets.customSlotSamples).to.deep.equal({
-            Name: ['Borimir', 'Vlasto'].join('\n')
+    it('should generate customSlots', () => {
+        expect(assets.customSlots).to.deep.equal({
+            Name: ['Borimir', 'Vlasto']
         });
+    });
+
+    it('should generate stringified speechAssets', () => {
+        const stringifiedAssets = assets.toString();
+
+        expect(typeof stringifiedAssets).to.equal('string');
+        expect(stringifiedAssets.split('\n\n').length).to.equal(4);
     });
 
 });
