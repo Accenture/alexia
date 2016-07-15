@@ -122,7 +122,7 @@ To display card in Alexa app add configuration to responseObject `card` property
 ```javascript
 app.intent('CardsIntent', 'Whats in shopping cart', () => {
     return {
-        text: 'Your shopping card contains Amazon Echo Device and 2 more items. To see the full list check out your Alexa app',
+        text: 'Your shopping cart contains Amazon Echo Device and 2 more items. To see the full list check out your Alexa app',
         card: {
             title: 'Shopping cart',
             content: 'You shopping cart contains: Amazon Echo, Amazon Tap, Echo Dot'
@@ -136,7 +136,7 @@ app.intent('CardsIntent', 'Whats in shopping cart', () => {
 To add reprompt text to your response add `reprompt` string value to responseObject
 
 ```javascript
-app.intent('RepromptIntent', 'Send emai to Mom', () => {
+app.intent('RepromptIntent', 'Send email to Mom', () => {
     return {
         text: 'What is the text of your message',
         reprompt: 'Sorry I did not catch it. What is the text of your message'
