@@ -224,7 +224,7 @@ npm install hapi --save
 
 ...
 
-```javacript
+```javascript
 const server = alexia.createServer(app);
 ```
 
