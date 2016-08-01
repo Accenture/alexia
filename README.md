@@ -13,11 +13,17 @@ const app = alexia.createApp('HelloWorldApp');
 app.intent('HelloIntent', 'Hello', () => {
     return 'Hello from Alexia app';
 });
+
+alexia.createServer(app).start();
 ```
 
 ## Installation
 
 `npm install alexia --save`
+
+Optional: requires [Handling Amazon Requests manually](#handling-amazon-requests-manually)
+
+`npm install hapi --save`
 
 ## Overview
 
@@ -42,7 +48,7 @@ To create new app simply call `alexia.createApp()`
 
 ```javascript
 const alexia = require('alexia');
-const app = alexia.createApp('MyApp')
+const app = alexia.createApp('MyApp');
 ```
 
 ### Create Intents
