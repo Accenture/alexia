@@ -183,38 +183,6 @@ const speechAssets = app.speechAssets(); // object
 console.log(speechAssets.toString()); // stringified version - f.e. copy paste from console
 ```
 
-### Handling Amazon Requests
-
-To handle Amazon requests you need to create HTTP server with POST route. See below example with [Hapi](http://hapijs.com/) server
-
-```javascript
-const Hapi = require('hapi');
-const server = new Hapi.Server();
-const app = require('./app'); // Your app
-
-server.connection({
-    port: process.env.PORT || 8888
-});
-
-server.route({
-    path: '/',
-    method: 'POST',
-    handler: (request, response) => {
-        app.handle(request.payload, (data) => {
-            response(data);
-        });
-    }
-});
-
-server.start((err) => {
-    if (err) throw err;
-    console.log('Server running at:', server.info.uri);
-
-    const speechAssets = app.speechAssets();
-    console.log(speechAssets.toString());
-});
-```
-
 ### Actions
 
 Feature of Alexia that helps you to control flow of the intents. To understand it easier see the code below.
@@ -248,11 +216,55 @@ app.action({
 app.defaultActionFail(() => 'Sorry, your request is invalid');
 ```
 
+### Handling Amazon Requests
+
+```
+npm install hapi --save
+```
+
+...
+
+```javacript
+const server = alexia.createServer(app);
+```
+
+### Handling Amazon Requests Manually
+
+To handle Amazon requests you need to create HTTP server with POST route. See below example with [Hapi](http://hapijs.com/) server
+
+```javascript
+const Hapi = require('hapi');
+const server = new Hapi.Server();
+const app = require('./app'); // Your app
+
+server.connection({
+    port: process.env.PORT || 8888
+});
+
+server.route({
+    path: '/',
+    method: 'POST',
+    handler: (request, response) => {
+        app.handle(request.payload, (data) => {
+            response(data);
+        });
+    }
+});
+
+server.start((err) => {
+    if (err) throw err;
+    console.log('Server running at:', server.info.uri);
+
+    const speechAssets = app.speechAssets();
+    console.log(speechAssets.toString());
+});
+```
+
 ## Testing
 
 ### Deploy
 
-- Implement server handler on POST endpoint. See [Handling Amazon Requests](#handling-amazon-requests)
+- Create server handler on POST endpoint. See [Handling Amazon Requests](#handling-amazon-requests)
 - Deploy application on public secured endpoint. For example:
     - [Heroku](https://www.heroku.com)
     - [AWS](https://aws.amazon.com)
