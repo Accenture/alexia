@@ -20,16 +20,19 @@ describe('server', () => {
     });
 
     beforeEach(() => {
-        app = {
-            handle: sinon.spy((requestObject, done) => {
-                // ... responseObject in lib generated
-                done(mockResponse);
-            })
-        };
+        app = alexia.createApp('MyApp');
+        sinon.stub(app, 'handle', (requestObject, done) => {
+            // ... responseObject in lib generated
+            done(mockResponse);
+        });
+    });
+
+    afterEach(() => {
+        app.handle.restore();
     });
 
     it('should create working Hapi server', (done) => {
-        const server = alexia.createServer(app);
+        const server = app.createServer(app);
 
         server.start((serverError => {
             expect(serverError).to.be.not.ok;

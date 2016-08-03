@@ -14,7 +14,7 @@ app.intent('HelloIntent', 'Hello', () => {
     return 'Hello from Alexia app';
 });
 
-alexia.createServer(app).start();
+app.createServer().start();
 ```
 
 ## Installation
@@ -224,19 +224,24 @@ app.defaultActionFail(() => 'Sorry, your request is invalid');
 
 ### Handling Amazon Requests
 
+To handle Amazon requests you need to create HTTP server with POST route. You can take advantage or our API to create Hapi server so you don't have to create it manually. This requires to install `hapi` as dependency:
+
 ```
 npm install hapi --save
 ```
 
-...
 
 ```javascript
-const server = alexia.createServer(app);
+const options = {
+    path: '/', // defaults to: '/'
+    port: 8888 // defaults to: process.env.PORT or 8888
+};
+const server = app.createServer(options);
 ```
 
 ### Handling Amazon Requests Manually
 
-To handle Amazon requests you need to create HTTP server with POST route. See below example with [Hapi](http://hapijs.com/) server
+You can create your own HTTP from scratch to handle Amazon requests manually. See below example with [Hapi](http://hapijs.com/) server
 
 ```javascript
 const Hapi = require('hapi');
