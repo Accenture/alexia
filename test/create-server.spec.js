@@ -38,9 +38,7 @@ describe('server', () => {
 
             // Send POST request to server
             request(createRequestOptions(server.info.uri), (requestError, response) => {
-                console.log(requestError);
-                console.log(response);
-                // expect(requestError).to.be.not.ok;
+                expect(requestError).to.be.not.ok;
                 expect(response.body).to.deep.equal(mockResponse);
                 expect(response.statusCode === 200);
 
