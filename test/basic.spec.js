@@ -5,7 +5,6 @@ const alexia = require('../');
 const app = require('./test-apps/basic-app');
 const createRequest = require('../src/create-request');
 
-const intentNames = Object.keys(app.intents);
 const intents = _.values(app.intents);
 
 describe('basic app handler', () => {
@@ -157,31 +156,31 @@ describe('basic app handler', () => {
             app2.customSlot('Number', []);
             throw new Error('App was handled with custom slot redefinition');
         } catch(e) {
-            expect(e.message).to.equal('Slot with name Number is already defined in built-in slots.');
+            expect(e.message).to.equal('Slot with name Number is already defined in built-in slots');
         }
 
         try {
             app2.customSlot('AMAZON.NUMBER', []);
             throw new Error('App was handled with custom slot redefinition');
         } catch(e) {
-            expect(e.message).to.equal('Slot with name AMAZON.NUMBER is already defined in built-in slots.');
+            expect(e.message).to.equal('Slot with name AMAZON.NUMBER is already defined in built-in slots');
         }
     });
 
     it('should not create intent with invalid utterances', () => {
         try {
             const app2 = alexia.createApp('App2');
-            app2.intent('MegaIntent', 'Not good* utterance *-#$%^&*', () => 'Nope')
+            app2.intent('MegaIntent', 'Not good* utterance *-#$%^&*', () => 'Nope');
             throw new Error('App was handled with invalid intent utterance');
         } catch(e) {
-            expect(e.message).to.equal('Error: Sample utterance: \'Not good* utterance *-#$%^&*\' is not valid. Each sample utterance must consist only of alphabet characters, spaces, dots, hyphens, brackets and single quotes');
+            expect(e.message).to.equal('Sample utterance: \'Not good* utterance *-#$%^&*\' is not valid. Each sample utterance must consist only of alphabet characters, spaces, dots, hyphens, brackets and single quotes');
         }
     });
 
     it('should not create intent with invalid name', () => {
         try {
             const app2 = alexia.createApp('App2');
-            app2.intent('Mega -.- Intent o/', 'Hi', () => 'Nope bye')
+            app2.intent('Mega -.- Intent o/', 'Hi', () => 'Nope bye');
             throw new Error('App was handled with invalid intent name');
         } catch(e) {
             expect(e.message).to.equal('Intent name Mega -.- Intent o/ is invalid. Only lowercase and uppercase letters are allowed');

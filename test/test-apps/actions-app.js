@@ -2,14 +2,14 @@
 const alexia = require('../..');
 const app = alexia.createApp('ActionsApp');
 
-const intentA = app.intent('IntentA', 'remove stuff', (slots) => {
+const intentA = app.intent('IntentA', 'remove stuff', () => {
     return {
         text: 'Are you sure you want to remove stuff?',
         end: false
-    }
+    };
 });
 
-const intentB = app.intent('IntentB', 'yes', (slots, attrs) => {
+const intentB = app.intent('IntentB', 'yes', () => {
     return 'Your stuff has been cleared';
 });
 
@@ -26,20 +26,20 @@ app.action({from: '*', to: 'IntentA'});
 app.action({
     from: intentA,
     to: intentB,
-    if: (slots, attrs) => 1 === 1
+    if: () => 1 === 1
 });
 
 app.action({
     from: intentB,
     to: 'IntentC',
-    if: (slots, attrs) => 1 === 2,
-    fail: (slots, attrs) => 'Could not handle request'
+    if: () => 1 === 2,
+    fail: () => 'Could not handle request'
 });
 
 app.action({
     from: intentB,
     to: 'IntentD',
-    if: (slots, attrs) => 1 === 2
+    if: () => 1 === 2
 });
 
 module.exports = app;

@@ -9,11 +9,11 @@ const intentA = app.intent('intentA', 'clear my calendar for {date:Date}', (slot
             date: slots.date
         },
         end: false
-    }
+    };
 });
 
 // Or use built-in amazon intents. See: `examples/built-in-intents.js`
-const intentB = app.intent('intentB', 'yes', (slots, attrs) => {
+const intentB = app.intent('intentB', 'yes', () => {
     // Clear calendar for date `attrs.date` here
     return 'Your calendar has been cleared';
 });
@@ -31,7 +31,7 @@ app.action({
     from: intentA,
     to: intentB,
     if: (slots, attrs) => attrs.date, // Note: date should be validated here
-    fail: (slots, attrs) => 'Sorry, your command is invalid'
+    fail: () => 'Sorry, your command is invalid'
 });
 
 app.defaultActionFail(() => 'Sorry, your request is invalid');

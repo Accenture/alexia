@@ -4,11 +4,11 @@ const app = alexia.createApp('SpeechAssetsExample');
 
 app.customSlot('Mood', ['fine', 'meh']);
 
-app.intent('WhatsUpIntent', 'I am doing {mood:Mood}', (slots, attrs) => {
+app.intent('WhatsUpIntent', 'I am doing {mood:Mood}', () => {
     return 'Whatever you say';
 });
 
-app.intent('AwesomeIntent', 'You are awesome', (slots, attrs) => {
+app.intent('AwesomeIntent', 'You are awesome', () => {
     return 'Yes';
 });
 

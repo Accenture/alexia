@@ -1,5 +1,6 @@
 'use strict';
 const _ = require('lodash');
+const error = require('debug')('alexia:error');
 const bases = require('bases');
 const builtInSlotsMap = require('./built-in-slots-map');
 const builtInIntentsMap = require('./built-in-intents-map');
@@ -21,6 +22,7 @@ module.exports = (intents, name, richUtterances, handler) => {
         name = generateIntentName(intents);
 
     } else if(!validator.isNameValid(name)) {
+        error(`Intent name: "${name}" is invalid`);
         throw Error(`Intent name ${name} is invalid. Only lowercase and uppercase letters are allowed`);
 
     } else if(builtInIntentsMap[name]) {
@@ -32,7 +34,7 @@ module.exports = (intents, name, richUtterances, handler) => {
     let slots = [];
     let utterances = [];
 
-    parseRichUtterances(richUtterances, slots, utterances)
+    parseRichUtterances(richUtterances, slots, utterances);
 
     return {
         name: name,
@@ -40,7 +42,7 @@ module.exports = (intents, name, richUtterances, handler) => {
         utterances: utterances,
         handler: handler
     };
-}
+};
 
 const generateIntentName = (intents) => {
     let position = 0;
@@ -73,16 +75,17 @@ const parseRichUtterances = (richUtterances, slots, utterances) => {
             // Remember utterance
             utterances.push(utterance);
         } else {
-            throw new Error(`Error: Sample utterance: '${utterance}' is not valid. Each sample utterance must consist only of alphabet characters, spaces, dots, hyphens, brackets and single quotes`);
+            error(`Sample utterance: "${utterance}" is not valid`);
+            throw new Error(`Sample utterance: '${utterance}' is not valid. Each sample utterance must consist only of alphabet characters, spaces, dots, hyphens, brackets and single quotes`);
         }
-       
+
     });
 };
 
 const transformSlotType = (type) => {
     const transformedType = builtInSlotsMap[type];
     return transformedType ? transformedType : type;
-}
+};
 
 const findUtteranceMatches = (utterance) => {
   // Example: for 'move forward by {value:Number}' we get:
@@ -95,4 +98,4 @@ const findUtteranceMatches = (utterance) => {
   }
 
   return allMatches;
-}
+};

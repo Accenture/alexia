@@ -1,10 +1,11 @@
 'use strict';
 const _ = require('lodash');
-const debug = require('debug')('alexia:create-app');
+const debug = require('debug')('alexia:debug');
+const error = require('debug')('alexia:error');
+const info = require('debug')('alexia:info');
 const handleRequest = require('./handle-request');
 const createIntent = require('./create-intent');
 const createCustomSlot = require('./create-custom-slot');
-const createRequest = require('./create-request');
 const generateSpeechAssets = require('./generate-speech-assets');
 const builtInIntentsMap = require('./built-in-intents-map');
 const createServer = require('./create-server');
@@ -38,7 +39,8 @@ module.exports = (name, options) => {
      * @param {function} handler - Handler to be called when app is started without intent
      */
     app.onStart = (handler) => {
-        debug(`Setted up onStart handler: ${handler}`);
+        info('Setted up onStart handler');
+        debug(`Setted up onStart handler: "${handler}"`);
         handlers.onStart = handler;
     };
 
@@ -47,7 +49,8 @@ module.exports = (name, options) => {
      * @param {function} handler - Handler to be called when application is unexpectedly terminated
      */
     app.onEnd = (handler) => {
-        debug(`Setted up onEnd handler: ${handler}`);
+        info('Setted up onEnd handler');
+        debug(`Setted up onEnd handler: "${handler}"`);
         handlers.onEnd = handler;
     };
 
@@ -56,7 +59,8 @@ module.exports = (name, options) => {
      * @param {function} handler - Default handler to be called when action can not be invoked
      */
     app.defaultActionFail = (handler) => {
-        debug(`Setted up defaultActionFail handler: ${handler}`);
+        info('Setted up defaultActionFail handler');
+        debug(`Setted up defaultActionFail handler: "${handler}"`);
         handlers.defaultActionFail = handler;
     };
 
@@ -69,7 +73,8 @@ module.exports = (name, options) => {
     app.intent = (name, richUtterances, handler) => {
         const intent = createIntent(app.intents, name, richUtterances, handler);
         app.intents[intent.name] = intent;
-        debug(`Created intent: ${intent}`);
+        info(`Created intent "${intent.name}"`);
+        debug(`Created intent: "${JSON.stringify(intent)}"`);
 
         return intent;
     };
@@ -84,6 +89,7 @@ module.exports = (name, options) => {
     app.builtInIntent = (name, utterances, handler) => {
         // Validate built-in intent name
         if(!builtInIntentsMap[name]) {
+            error(`Built-in Intent name: "${name}" is invalid`);
             throw new Error(`Built-in Intent name ${name} is invalid. Please use one of: ${builtInIntentsList}`);
         }
 
@@ -102,7 +108,6 @@ module.exports = (name, options) => {
      * @param {Function} done - Callback to be called when request is handled. Callback is called with one argument - response JSON
      */
     app.handle = (request, done) => {
-        // TODO
         handleRequest(app, request, handlers, done);
     };
 
@@ -114,7 +119,8 @@ module.exports = (name, options) => {
     app.customSlot = (name, samples) => {
         const customSlot = createCustomSlot(app.customSlots, name, samples);
         app.customSlots[name] = customSlot;
-        debug(`Created customSlot: ${customSlot}`);
+        info(`Created customSlot "${name}"`);
+        debug(`Created customSlot: "${JSON.stringify(customSlot)}"`);
     };
 
     /**
@@ -132,14 +138,14 @@ module.exports = (name, options) => {
             if: action.if,
             fail: action.fail
         });
-        debug(`Created action: ${action}`);
+        info('Created action');
+        debug(`Created action: "${JSON.stringify(action)}"`);
     };
 
     /**
      * Generates speech assets object: {schema, utterances, customSlots}
      */
     app.speechAssets = () => {
-        // TODO
         return generateSpeechAssets(app);
     };
 
@@ -151,7 +157,6 @@ module.exports = (name, options) => {
      * @returns {object} server
      */
     app.createServer = (options) => {
-        // TODO
         return createServer(app, options);
     };
 

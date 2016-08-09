@@ -1,5 +1,4 @@
 'use strict';
-const _ = require('lodash');
 const expect = require('chai').expect;
 const alexia = require('..');
 const sinon = require('sinon');
@@ -39,7 +38,9 @@ describe('server', () => {
 
             // Send POST request to server
             request(createRequestOptions(server.info.uri), (requestError, response) => {
-                expect(requestError).to.be.not.ok;
+                console.log(requestError);
+                console.log(response);
+                // expect(requestError).to.be.not.ok;
                 expect(response.body).to.deep.equal(mockResponse);
                 expect(response.statusCode === 200);
 

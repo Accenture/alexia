@@ -1,4 +1,6 @@
 'use strict';
+const debug = require('debug')('alexia:debug');
+const info = require('debug')('alexia:info');
 
 /**
  * Creates Hapi server with one route that handles all requests with app specified in param. Server must be started using `server.start()`
@@ -28,5 +30,7 @@ module.exports = (app, options) => {
         }
     });
 
+    info(`Server created on URI: "${server.info.uri}"`);
+    debug(`Server created on URI: "${server.info.uri}"`);
     return server;
 };

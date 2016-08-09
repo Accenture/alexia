@@ -1,5 +1,8 @@
 'use strict';
 const _ = require('lodash');
+const debug = require('debug')('alexia:debug');
+const error = require('debug')('alexia:error');
+const info = require('debug')('alexia:info');
 
 /**
  * Handles request and calls done when finished
@@ -11,10 +14,10 @@ const _ = require('lodash');
 module.exports = (app, request, handlers, done) => {
     const appId = request.session.application.applicationId;
     const options = app.options;
-    const intents = _.values(app.intents);
 
     // Application ids is specified and does not contain app id in request
     if(options && options.ids && options.ids.length > 0 && options.ids.indexOf(appId) === -1) {
+        error(`Request NOT handled - invalid application ID: "${options.ids}"`);
         throw new Error('Application id is not valid');
     }
 
@@ -32,6 +35,8 @@ module.exports = (app, request, handlers, done) => {
 
         case 'LaunchRequest':
             callHandler(handlers.onStart, null, request.session.attributes, app, done);
+            info(`Request "${requestType}" handled`);
+            debug(`Request "${requestType}" handled: "${JSON.stringify(request)}"`);
             break;
 
         case 'IntentRequest':
@@ -39,24 +44,30 @@ module.exports = (app, request, handlers, done) => {
             const intent = app.intents[request.request.intent.name];
 
             if(!intent) {
+                error(`Request NOT handled - unsupported intent: "${intentName}"`);
                 throw new Error(`Unsupported intent: '${intentName}'`);
             }
 
-            checkActionsAndHandle(intent, request.request.intent.slots, request.session.attributes, app, handlers, done)
+            checkActionsAndHandle(intent, request.request.intent.slots, request.session.attributes, app, handlers, done);
+            info(`Request "${requestType}" handled`);
+            debug(`Request "${requestType}" handled: "${JSON.stringify(request)}"`);
             break;
 
         case 'SessionEndedRequest':
             callHandler(handlers.onEnd, null, request.session.attributes, app, done);
+            info(`Request "${requestType}" handled`);
+            debug(`Request "${requestType}" handled: "${JSON.stringify(request)}"`);
             break;
 
         default:
-            throw new Error(`Unsupported request: '${requestType}'`)
+            error(`Request NOT handled - unsupported request type: "${requestType}"`);
+            throw new Error(`Unsupported request: '${requestType}'`);
     }
 
-}
+};
 
 const callHandler = (handler, slots, attrs, app, done) => {
-    
+
     // Transform slots into simple key:value schema
     slots = _.transform(slots, (result, value) => {
         result[value.name] = value.value;
@@ -144,7 +155,7 @@ const createResponse = (options, slots, attrs, app) => {
     }
 
     // Create outputSpeech object for text or ssml
-    const outputSpeech = createOutputSpeechObject(options.text, options.ssml)
+    const outputSpeech = createOutputSpeechObject(options.text, options.ssml);
 
     let responseObject = {
         version: app.options ? app.options.version : '0.0.1',

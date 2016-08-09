@@ -1,5 +1,7 @@
 'use strict';
 const _ = require('lodash');
+const debug = require('debug')('alexia:debug');
+const info = require('debug')('alexia:info');
 
 module.exports = (app) => {
     let assets = {
@@ -10,8 +12,9 @@ module.exports = (app) => {
 
     assets.toString = createStringifyAssets(assets);
 
+    info('Assets created');
     return assets;
-}
+};
 
 /**
  * @param {object} assets
@@ -41,7 +44,7 @@ const createAsset = (type, data) => {
 };
 
 /**
- * Generates intent schema JSON string 
+ * Generates intent schema JSON string
  * @return {string} strigified intent schema object generated from intents
  */
 const genIntentSchema = (intents) => {
@@ -62,6 +65,7 @@ const genIntentSchema = (intents) => {
         intentSchema.intents.push(currentSchema);
     });
 
+    debug(`Generated intentSchema: "${JSON.stringify(intentSchema)}"`); // TODO
     return JSON.stringify(intentSchema, null, 2);
 };
 
@@ -80,6 +84,7 @@ const genUtterances = (intents) => {
         });
     });
 
+    debug(`Generated utterances: "${JSON.stringify(sampleUtterances)}"`); // TODO
     return sampleUtterances.join('\n');
 };
 
@@ -94,5 +99,6 @@ const genCustomSlots = (customSlots) => {
         allCustomSlotSamples[customSlot.name] = customSlot.samples;
     });
 
+    debug(`Generated customSlots: "${JSON.stringify(allCustomSlotSamples)}"`); // TODO
     return allCustomSlotSamples;
 };
