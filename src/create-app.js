@@ -1,8 +1,6 @@
 'use strict';
 const _ = require('lodash');
-const debug = require('debug')('alexia:debug');
 const error = require('debug')('alexia:error');
-const info = require('debug')('alexia:info');
 const handleRequest = require('./handle-request');
 const createIntent = require('./create-intent');
 const createCustomSlot = require('./create-custom-slot');
@@ -39,8 +37,6 @@ module.exports = (name, options) => {
      * @param {function} handler - Handler to be called when app is started without intent
      */
     app.onStart = (handler) => {
-        info('Setted up onStart handler');
-        debug(`Setted up onStart handler: "${handler}"`);
         handlers.onStart = handler;
     };
 
@@ -49,8 +45,6 @@ module.exports = (name, options) => {
      * @param {function} handler - Handler to be called when application is unexpectedly terminated
      */
     app.onEnd = (handler) => {
-        info('Setted up onEnd handler');
-        debug(`Setted up onEnd handler: "${handler}"`);
         handlers.onEnd = handler;
     };
 
@@ -59,8 +53,6 @@ module.exports = (name, options) => {
      * @param {function} handler - Default handler to be called when action can not be invoked
      */
     app.defaultActionFail = (handler) => {
-        info('Setted up defaultActionFail handler');
-        debug(`Setted up defaultActionFail handler: "${handler}"`);
         handlers.defaultActionFail = handler;
     };
 
@@ -73,8 +65,6 @@ module.exports = (name, options) => {
     app.intent = (name, richUtterances, handler) => {
         const intent = createIntent(app.intents, name, richUtterances, handler);
         app.intents[intent.name] = intent;
-        info(`Created intent "${intent.name}"`);
-        debug(`Created intent: "${JSON.stringify(intent)}"`);
 
         return intent;
     };
@@ -119,8 +109,6 @@ module.exports = (name, options) => {
     app.customSlot = (name, samples) => {
         const customSlot = createCustomSlot(app.customSlots, name, samples);
         app.customSlots[name] = customSlot;
-        info(`Created customSlot "${name}"`);
-        debug(`Created customSlot: "${JSON.stringify(customSlot)}"`);
     };
 
     /**
@@ -138,8 +126,6 @@ module.exports = (name, options) => {
             if: action.if,
             fail: action.fail
         });
-        info('Created action');
-        debug(`Created action: "${JSON.stringify(action)}"`);
     };
 
     /**

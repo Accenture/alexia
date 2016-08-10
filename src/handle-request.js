@@ -31,32 +31,29 @@ module.exports = (app, request, handlers, done) => {
 
     const requestType = request.request.type;
 
+    info(`Handling request: "${requestType}"`);
+    debug(`Request payload: ${JSON.stringify(request, null, 2)}`);
     switch (requestType) {
 
         case 'LaunchRequest':
             callHandler(handlers.onStart, null, request.session.attributes, app, done);
-            info(`Request "${requestType}" handled`);
-            debug(`Request "${requestType}" handled: "${JSON.stringify(request)}"`);
             break;
 
         case 'IntentRequest':
             const intentName = request.request.intent.name;
             const intent = app.intents[request.request.intent.name];
 
+            info(`Handling intent: "${intentName}"`);
             if(!intent) {
                 error(`Request NOT handled - unsupported intent: "${intentName}"`);
                 throw new Error(`Unsupported intent: '${intentName}'`);
             }
 
             checkActionsAndHandle(intent, request.request.intent.slots, request.session.attributes, app, handlers, done);
-            info(`Request "${requestType}" handled`);
-            debug(`Request "${requestType}" handled: "${JSON.stringify(request)}"`);
             break;
 
         case 'SessionEndedRequest':
             callHandler(handlers.onEnd, null, request.session.attributes, app, done);
-            info(`Request "${requestType}" handled`);
-            debug(`Request "${requestType}" handled: "${JSON.stringify(request)}"`);
             break;
 
         default:
