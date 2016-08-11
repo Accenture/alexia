@@ -345,15 +345,22 @@ app.handle(launchRequest, (response) => {
 });
 ```
 
-## Next Plan
+## Debugging
 
-- Generate API documentation
-- Add API to save speechAssets to file
-- Add more cards options (images etc.)
-- Merge session attributes automatically
-- Advanced error handling
-- Logging
-- Add more sophisticated request creator for unit testing
+We are using [debug](https://github.com/visionmedia/debug) package to debug our alexia applications. To start application in debug mode export environment variable `DEBUG`
+
+Examples:
+
+- `DEBUG=alexia:info` - print only info logs
+- `DEBUG=alexia:debug` - print only debug logs
+- `DEBUG=alexia:error` - print only error logs
+- `DEBUG=alexia:*` - print all logs
+
+To start your app with info logs run in terminal:
+
+```bash
+DEBUG=alexia:info npm start
+```
 
 ## Scripts
 
@@ -364,7 +371,9 @@ app.handle(launchRequest, (response) => {
 
 ## Contributing
 
-Alexia is an open source project and we encourage contributions. Please make sure to cover your code with unit tests
+Alexia is an open source project and we encourage contributions. Please make sure to cover your code with unit tests.
+
+Please submit all pull requests into the **develop** branch.
 
 For more information refer to general guide [Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/)
 
