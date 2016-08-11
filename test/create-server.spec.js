@@ -1,5 +1,4 @@
 'use strict';
-const _ = require('lodash');
 const expect = require('chai').expect;
 const alexia = require('..');
 const sinon = require('sinon');

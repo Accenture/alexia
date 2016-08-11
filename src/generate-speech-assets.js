@@ -11,7 +11,7 @@ module.exports = (app) => {
     assets.toString = createStringifyAssets(assets);
 
     return assets;
-}
+};
 
 /**
  * @param {object} assets
@@ -41,7 +41,7 @@ const createAsset = (type, data) => {
 };
 
 /**
- * Generates intent schema JSON string 
+ * Generates intent schema JSON string
  * @return {string} strigified intent schema object generated from intents
  */
 const genIntentSchema = (intents) => {
