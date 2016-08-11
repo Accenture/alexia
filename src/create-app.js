@@ -1,9 +1,9 @@
 'use strict';
 const _ = require('lodash');
+const error = require('debug')('alexia:error');
 const handleRequest = require('./handle-request');
 const createIntent = require('./create-intent');
 const createCustomSlot = require('./create-custom-slot');
-const createRequest = require('./create-request');
 const generateSpeechAssets = require('./generate-speech-assets');
 const builtInIntentsMap = require('./built-in-intents-map');
 const createServer = require('./create-server');
@@ -79,6 +79,7 @@ module.exports = (name, options) => {
     app.builtInIntent = (name, utterances, handler) => {
         // Validate built-in intent name
         if(!builtInIntentsMap[name]) {
+            error(`Built-in Intent name: "${name}" is invalid`);
             throw new Error(`Built-in Intent name ${name} is invalid. Please use one of: ${builtInIntentsList}`);
         }
 

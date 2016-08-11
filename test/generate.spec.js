@@ -1,5 +1,4 @@
 'use strict';
-const _ = require('lodash');
 const expect = require('chai').expect;
 const app = require('./test-apps/basic-app');
 
@@ -7,8 +6,8 @@ describe('generateSpeechAssets', () => {
     const assets = app.speechAssets();
 
     it('should generate intentSchema', () => {
-         expect(JSON.parse(assets.intentSchema)).to.deep.equal({
-             intents: [
+        expect(JSON.parse(assets.intentSchema)).to.deep.equal({
+            intents: [
                 {intent: 'FirstIntent'},
                 {intent: 'NamedIntent'},
                 {intent: 'a'},
@@ -27,8 +26,8 @@ describe('generateSpeechAssets', () => {
                 {intent: 'IntentA'},
                 {intent: 'IntentB'},
                 {intent: 'e'},
-             ]
-         });
+            ]
+        });
     });
 
     it('should generate utterances', () => {
