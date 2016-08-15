@@ -139,14 +139,11 @@ module.exports = (name, options) => {
     /**
      * Save speech assets to their respective files: intentSchema.json, utterances.txt, customSlots.txt
      * @param {string} [directory] - directory folder name, defaults to '/speechAssets'
-     * @param {function} [done] - callback function, when all files were sucessfully created
      */
-    app.saveSpeechAssets = (directory, done) => {
+    app.saveSpeechAssets = (directory) => {
         const dir = directory ? directory : 'speechAssets';
         const assets = generateSpeechAssets(app);
-        saveSpeechAssetsToDirectory(assets, dir, () => {
-            done();
-        });
+        saveSpeechAssetsToDirectory(assets, dir);
     };
 
     /**
