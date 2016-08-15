@@ -191,7 +191,7 @@ console.log(speechAssets.toString()); // stringified version - f.e. copy paste f
 
 ### Save Speech Assets To Directory
 
-If you want to use your assets(`intentSchema`, `sampleUtterances` and `customSlots`) later and have them stored, this function will do it for you. You can pass the name of your directory or leave it empty which defaults to `/speechAssets`.
+If you want to use your assets (`intentSchema`, `sampleUtterances` and `customSlots`) later and have them stored, this function will do it for you. You can pass the name of your directory or leave it empty which defaults to `/speechAssets`.
 
 Directory structure looks like this:
 ```
