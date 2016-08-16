@@ -5,6 +5,7 @@ const handleRequest = require('./handle-request');
 const createIntent = require('./create-intent');
 const createCustomSlot = require('./create-custom-slot');
 const generateSpeechAssets = require('./generate-speech-assets');
+const saveSpeechAssets = require('./save-speech-assets');
 const builtInIntentsMap = require('./built-in-intents-map');
 const createServer = require('./create-server');
 
@@ -129,10 +130,20 @@ module.exports = (name, options) => {
     };
 
     /**
-     * Generates speech assets object: {schema, utterances, customSlots}
+     * Generate speech assets object: {schema, utterances, customSlots}
      */
     app.speechAssets = () => {
         return generateSpeechAssets(app);
+    };
+
+    /**
+     * Save speech assets to their respective files: intentSchema.json, utterances.txt, customSlots.txt
+     * @param {string} [directory] - directory folder name, defaults to '/speechAssets'
+     */
+    app.saveSpeechAssets = (directory) => {
+        const dir = directory ? directory : 'speechAssets';
+        const assets = generateSpeechAssets(app);
+        saveSpeechAssets(assets, dir);
     };
 
     /**
