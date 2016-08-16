@@ -5,7 +5,7 @@ const handleRequest = require('./handle-request');
 const createIntent = require('./create-intent');
 const createCustomSlot = require('./create-custom-slot');
 const generateSpeechAssets = require('./generate-speech-assets');
-const saveSpeechAssetsToDirectory = require('./save-speech-assets-to-directory');
+const saveSpeechAssets = require('./save-speech-assets');
 const builtInIntentsMap = require('./built-in-intents-map');
 const createServer = require('./create-server');
 
@@ -143,7 +143,7 @@ module.exports = (name, options) => {
     app.saveSpeechAssets = (directory) => {
         const dir = directory ? directory : 'speechAssets';
         const assets = generateSpeechAssets(app);
-        saveSpeechAssetsToDirectory(assets, dir);
+        saveSpeechAssets(assets, dir);
     };
 
     /**
