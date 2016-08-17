@@ -13,9 +13,11 @@ const app = alexia.createApp('HelloWorldApp');
 app.intent('HelloIntent', 'Hello', () => {
     return 'Hello from Alexia app';
 });
-
-app.createServer().start();
 ```
+
+| HTTPS server | or | AWS Lambda |
+|:-:|:-:|:-:|
+| `app.createServer().start();` | &nbsp; | ```exports.handler = event =>```<br />```app.handle(null, event);``` |
 
 ## Installation
 
@@ -300,16 +302,32 @@ server.start((err) => {
 });
 ```
 
-## Testing
+## Deploy
 
-### Deploy
+### Heroku
 
-- Create server handler on POST endpoint. See [Handling Amazon Requests](#handling-amazon-requests)
-- Deploy application on public secured endpoint. For example:
-    - [Heroku](https://www.heroku.com)
-    - [AWS](https://aws.amazon.com)
+ 1. Create free [Heroku](https://www.heroku.com) acount
+ 2. Install [Heroku toolbelt](https://toolbelt.heroku.com/)
+ 3. Be sure to have `start` script defined in `package.json`
+ 4. Be sure to create server handler on POST endpoint. See [Handling Amazon Requests](#handling-amazon-requests)
+ 5. Run `git init` if git was not yet initialized in your project
+ 6. Run `heroku create` in project directory
+ 7. Run `git push heroku master`
+ 8. Copy your server URL to your Alexa Skill configuration. See [Create Alexa Skill](#create-alexa-skill)
 
-### Create skill
+### AWS Lambda
+
+1. Create account and login to [AWS Console](https://console.aws.amazon.com/console)
+2. Create new Lambda function
+3. Set function invocation to `index.handler`
+4. Add Alexa Skills Kit trigger
+5. Export `handler` in your index.js file
+
+```
+exports.handler = event => app.handle(null, event);
+```
+
+## Create Alexa skill
 
 - Login to your [Amazon developer account](https://developer.amazon.com)
 - Select Apps & Services
@@ -341,6 +359,8 @@ server.start((err) => {
   **Test**
     - Enable skill testing on this account
     - Enter one of your utterances and click `Ask MyApp`
+
+## Testing
 
 ### Device Testing
 
