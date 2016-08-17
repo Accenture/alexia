@@ -322,6 +322,7 @@ server.start((err) => {
 3. Set function invocation to `index.handler`
 4. Add Alexa Skills Kit trigger
 5. Export `handler` in your index.js file
+6. Copy Lambda function arn to your Alexa Skill configuration
 
 ```
 exports.handler = event => app.handle(null, event);
