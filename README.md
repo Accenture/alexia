@@ -60,6 +60,17 @@ app.intent(null, 'Hello Alexa what is in my calendar for today', () => 'Your cal
 app.intent('AnotherIntent', ['Hello', 'Hi', 'Whats up'], () => 'Hello yourself');
 ```
 
+### Create Welcome Message
+
+If you want more than just a generic "Welcome" from Alexa, you can use the onStart method to help you achieve that.
+
+```javascript
+app.onStart(() => {
+    return {
+        text: "Welcome to My Hello World App, say hello world to get started, or say help to get more instructions"
+    }
+})
+
 ### Built-in Intents
 
 Amazon Alexa Skills Kit provides a collection of built-in intents. These are intents for very common actions. Alexia provides convenient methods for their reusing and extending.
