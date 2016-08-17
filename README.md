@@ -66,9 +66,7 @@ If you want more than just a generic "Welcome" from Alexa, you can use the onSta
 
 ```javascript
 app.onStart(() => {
-    return {
-        'Welcome to My Hello World App, say hello world to get started, or say help to get more instructions'
-    }
+    return 'Welcome to My Hello World App, say hello world to get started, or say help to get more instructions'
 })
 
 ### Built-in Intents
