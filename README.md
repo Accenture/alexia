@@ -337,6 +337,7 @@ server.start((err) => {
 4. Add Alexa Skills Kit trigger
 5. Export `handler` in your index.js file
 6. Upload zipped project folder into AWS Lambda
+7. Copy Lambda function ARN to your Alexa Skill configuration
 
 ```javascript
 exports.handler = (event, context, callback) => {
