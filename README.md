@@ -15,9 +15,23 @@ app.intent('HelloIntent', 'Hello', () => {
 });
 ```
 
-| HTTPS server | or | AWS Lambda |
-|:-:|:-:|:-:|
-| `app.createServer().start();` | &nbsp; | ```exports.handler = event =>```<br />```app.handle(null, event);``` |
+**HTTPS Server**
+
+```
+app.createServer().start();
+```
+
+*or*
+
+**AWS Lamba**
+
+```javascript
+exports.handler = (event, context, callback) => {
+    app.handle(event, data => {
+        callback(null, data);
+    });
+};
+```
 
 ## Installation
 
@@ -322,9 +336,14 @@ server.start((err) => {
 3. Set function invocation to `index.handler`
 4. Add Alexa Skills Kit trigger
 5. Export `handler` in your index.js file
+6. Upload zipped project folder into AWS Lambda
 
-```
-exports.handler = event => app.handle(null, event);
+```javascript
+exports.handler = (event, context, callback) => {
+    app.handle(event, data => {
+        callback(null, data);
+    });
+};
 ```
 
 ## Create Alexa skill
