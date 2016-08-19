@@ -1,6 +1,6 @@
 {
   "name": "alexia",
-  "version": "1.2.1",
+  "version": "1.2.0",
   "description": "A Framework for creating Amazon Echo (Alexa) skills using Node.js",
   "main": "src/alexia.js",
   "repository": {
