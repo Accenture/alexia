@@ -1,11 +1,13 @@
 'use strict';
 const _ = require('lodash');
+const error = require('debug')('alexia:error');
 const handleRequest = require('./handle-request');
 const createIntent = require('./create-intent');
 const createCustomSlot = require('./create-custom-slot');
-const createRequest = require('./create-request');
 const generateSpeechAssets = require('./generate-speech-assets');
-const builtInIntentsMap = require('./built-in-intents-map')
+const saveSpeechAssets = require('./save-speech-assets');
+const builtInIntentsMap = require('./built-in-intents-map');
+const createServer = require('./create-server');
 
 const builtInIntentsList = _.keys(builtInIntentsMap).join(', ');
 
@@ -41,7 +43,7 @@ module.exports = (name, options) => {
 
     /**
      * Sets handler to be called on application end
-     * @param {function} handler - Handler to be called when application is unexpectedly terminated 
+     * @param {function} handler - Handler to be called when application is unexpectedly terminated
      */
     app.onEnd = (handler) => {
         handlers.onEnd = handler;
@@ -49,12 +51,12 @@ module.exports = (name, options) => {
 
     /**
      * Sets handler to be called on default action fail
-     * @param {function} handler - Default handler to be called when action can not be invoked 
+     * @param {function} handler - Default handler to be called when action can not be invoked
      */
     app.defaultActionFail = (handler) => {
         handlers.defaultActionFail = handler;
     };
-    
+
     /**
      * Creates intent
      * @param {string} name - Intent name. Should not be equal to built-in intent name. It is possible to use this function to create built-in intents but utterances are required argument and you need to specify full built-in intent name f.e. `AMAZON.StopIntent`. See `{@link app.builtInIntent}`. If not specified (null, undefined or empty string), automatically generated intent name is used but we recommend to name each intent
@@ -78,6 +80,7 @@ module.exports = (name, options) => {
     app.builtInIntent = (name, utterances, handler) => {
         // Validate built-in intent name
         if(!builtInIntentsMap[name]) {
+            error(`Built-in Intent name: "${name}" is invalid`);
             throw new Error(`Built-in Intent name ${name} is invalid. Please use one of: ${builtInIntentsList}`);
         }
 
@@ -92,7 +95,7 @@ module.exports = (name, options) => {
 
     /**
      * Handles request and calls done when finished
-     * @param {Object} request - Request JSON to be handled. 
+     * @param {Object} request - Request JSON to be handled.
      * @param {Function} done - Callback to be called when request is handled. Callback is called with one argument - response JSON
      */
     app.handle = (request, done) => {
@@ -101,7 +104,7 @@ module.exports = (name, options) => {
 
     /**
      * Creates custom slot
-     * @param {string} name - Name of the custom slot 
+     * @param {string} name - Name of the custom slot
      * @param {string[]} samples - Array of custom slot samples
      */
     app.customSlot = (name, samples) => {
@@ -127,10 +130,31 @@ module.exports = (name, options) => {
     };
 
     /**
-     * Generates speech assets object: {schema, utterances, customSlots}
+     * Generate speech assets object: {schema, utterances, customSlots}
      */
     app.speechAssets = () => {
         return generateSpeechAssets(app);
+    };
+
+    /**
+     * Save speech assets to their respective files: intentSchema.json, utterances.txt, customSlots.txt
+     * @param {string} [directory] - directory folder name, defaults to '/speechAssets'
+     */
+    app.saveSpeechAssets = (directory) => {
+        const dir = directory ? directory : 'speechAssets';
+        const assets = generateSpeechAssets(app);
+        saveSpeechAssets(assets, dir);
+    };
+
+    /**
+     * Creates Hapi server with one route that handles all request for this app. Server must be started using `server.start()`
+     * @param {number} [options] - Server options
+     * @property {number} [options.path] - Path to run server route on. Defaults to `/`
+     * @property {number} [options.port] - Port to run server on. If not specified then `process.env.PORT` is used. Defaults to `8888`
+     * @returns {object} server
+     */
+    app.createServer = (options) => {
+        return createServer(app, options);
     };
 
     return app;

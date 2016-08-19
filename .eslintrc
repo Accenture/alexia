@@ -11,7 +11,8 @@
   },
   "env": {
       "node": true,
-      "es6": true
+      "es6": true,
+      "mocha": true
   },
   "globals": {
     "module": true,
@@ -30,10 +31,11 @@
     ],
     "no-underscore-dangle": 0,
     "no-undef": 2,
-    "no-unused-vars": 0,
+    "no-unused-vars": 1,
     "quotes": [
       2,
       "single"
-    ]
+    ],
+    "semi": 1
   }
 }

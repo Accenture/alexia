@@ -15,9 +15,31 @@ app.intent('HelloIntent', 'Hello', () => {
 });
 ```
 
+**HTTPS Server**
+
+```
+app.createServer().start();
+```
+
+*or*
+
+**AWS Lamba**
+
+```javascript
+exports.handler = (event, context, callback) => {
+    app.handle(event, data => {
+        callback(null, data);
+    });
+};
+```
+
 ## Installation
 
 `npm install alexia --save`
+
+Optional: requires [Handling Amazon Requests manually](#handling-amazon-requests-manually)
+
+`npm install hapi --save`
 
 ## Overview
 
@@ -42,7 +64,7 @@ To create new app simply call `alexia.createApp()`
 
 ```javascript
 const alexia = require('alexia');
-const app = alexia.createApp('MyApp')
+const app = alexia.createApp('MyApp');
 ```
 
 ### Create Intents
@@ -58,6 +80,16 @@ app.intent(null, 'Hello Alexa what is in my calendar for today', () => 'Your cal
 
 // Intent with more utterances
 app.intent('AnotherIntent', ['Hello', 'Hi', 'Whats up'], () => 'Hello yourself');
+```
+
+### Create Welcome Message
+
+If you want more than just a generic "Welcome" from Alexa, you can use the onStart method to help you achieve that.
+
+```javascript
+app.onStart(() => {
+    return 'Welcome to My Hello World App, say hello world to get started, or say help to get more instructions';
+});
 ```
 
 ### Built-in Intents
@@ -183,36 +215,23 @@ const speechAssets = app.speechAssets(); // object
 console.log(speechAssets.toString()); // stringified version - f.e. copy paste from console
 ```
 
-### Handling Amazon Requests
+### Save Speech Assets To Directory
 
-To handle Amazon requests you need to create HTTP server with POST route. See below example with [Hapi](http://hapijs.com/) server
+If you want to use your assets (`intentSchema`, `sampleUtterances` and `customSlots`) later and have them stored, this function will do it for you. You can pass the name of your directory or leave it empty which defaults to `/speechAssets`.
+
+Directory structure looks like this:
+```
+├── speechAssets
+    ├── intentSchema.json
+    ├── utterances.txt
+    └── customSlots
+        ├── customSlotName.txt
+        ├── customSlotAge.txt
+        ...
+```
 
 ```javascript
-const Hapi = require('hapi');
-const server = new Hapi.Server();
-const app = require('./app'); // Your app
-
-server.connection({
-    port: process.env.PORT || 8888
-});
-
-server.route({
-    path: '/',
-    method: 'POST',
-    handler: (request, response) => {
-        app.handle(request.payload, (data) => {
-            response(data);
-        });
-    }
-});
-
-server.start((err) => {
-    if (err) throw err;
-    console.log('Server running at:', server.info.uri);
-
-    const speechAssets = app.speechAssets();
-    console.log(speechAssets.toString());
-});
+app.saveSpeechAssets('myAssets'); // No argument leads to default value speechAssets
 ```
 
 ### Actions
@@ -248,16 +267,87 @@ app.action({
 app.defaultActionFail(() => 'Sorry, your request is invalid');
 ```
 
-## Testing
+### Handling Amazon Requests
 
-### Deploy
+To handle Amazon requests you need to create HTTP server with POST route. You can take advantage or our API to create Hapi server so you don't have to create it manually. This requires to install `hapi` as dependency:
 
-- Implement server handler on POST endpoint. See [Handling Amazon Requests](#handling-amazon-requests)
-- Deploy application on public secured endpoint. For example:
-    - [Heroku](https://www.heroku.com)
-    - [AWS](https://aws.amazon.com)
+```
+npm install hapi --save
+```
 
-### Create skill
+
+```javascript
+const options = {
+    path: '/', // defaults to: '/'
+    port: 8888 // defaults to: process.env.PORT or 8888
+};
+const server = app.createServer(options);
+```
+
+### Handling Amazon Requests Manually
+
+You can create your own HTTP from scratch to handle Amazon requests manually. See below example with [Hapi](http://hapijs.com/) server
+
+```javascript
+const Hapi = require('hapi');
+const server = new Hapi.Server();
+const app = require('./app'); // Your app
+
+server.connection({
+    port: process.env.PORT || 8888
+});
+
+server.route({
+    path: '/',
+    method: 'POST',
+    handler: (request, response) => {
+        app.handle(request.payload, (data) => {
+            response(data);
+        });
+    }
+});
+
+server.start((err) => {
+    if (err) throw err;
+    console.log('Server running at:', server.info.uri);
+
+    const speechAssets = app.speechAssets();
+    console.log(speechAssets.toString());
+});
+```
+
+## Deploy
+
+### Heroku
+
+ 1. Create free [Heroku](https://www.heroku.com) acount
+ 2. Install [Heroku toolbelt](https://toolbelt.heroku.com/)
+ 3. Be sure to have `start` script defined in `package.json`
+ 4. Be sure to create server handler on POST endpoint. See [Handling Amazon Requests](#handling-amazon-requests)
+ 5. Run `git init` if git was not yet initialized in your project
+ 6. Run `heroku create` in project directory
+ 7. Run `git push heroku master`
+ 8. Copy your server URL to your Alexa Skill configuration. See [Create Alexa Skill](#create-alexa-skill)
+
+### AWS Lambda
+
+1. Create account and login to [AWS Console](https://console.aws.amazon.com/console)
+2. Create new Lambda function
+3. Set function invocation to `index.handler`
+4. Add Alexa Skills Kit trigger
+5. Export `handler` in your index.js file
+6. Upload zipped project folder into AWS Lambda
+7. Copy Lambda function ARN to your Alexa Skill configuration
+
+```javascript
+exports.handler = (event, context, callback) => {
+    app.handle(event, data => {
+        callback(null, data);
+    });
+};
+```
+
+## Create Alexa skill
 
 - Login to your [Amazon developer account](https://developer.amazon.com)
 - Select Apps & Services
@@ -289,6 +379,8 @@ app.defaultActionFail(() => 'Sorry, your request is invalid');
   **Test**
     - Enable skill testing on this account
     - Enter one of your utterances and click `Ask MyApp`
+
+## Testing
 
 ### Device Testing
 
@@ -322,15 +414,22 @@ app.handle(launchRequest, (response) => {
 });
 ```
 
-## Next Plan
+## Debugging
 
-- Generate API documentation
-- Add API to save speechAssets to file
-- Add more cards options (images etc.)
-- Merge session attributes automatically
-- Advanced error handling
-- Logging
-- Add more sophisticated request creator for unit testing
+We are using [debug](https://github.com/visionmedia/debug) package to debug our alexia applications. To start application in debug mode export environment variable `DEBUG`
+
+Examples:
+
+- `DEBUG=alexia:info` - print only info logs
+- `DEBUG=alexia:debug` - print only debug logs
+- `DEBUG=alexia:error` - print only error logs
+- `DEBUG=alexia:*` - print all logs
+
+To start your app with info logs run in terminal:
+
+```bash
+DEBUG=alexia:info npm start
+```
 
 ## Scripts
 
@@ -341,7 +440,9 @@ app.handle(launchRequest, (response) => {
 
 ## Contributing
 
-Alexia is an open source project and we encourage contributions. Please make sure to cover your code with unit tests
+Alexia is an open source project and we encourage contributions. Please make sure to cover your code with unit tests.
+
+Please submit all pull requests into the **develop** branch.
 
 For more information refer to general guide [Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/)
 

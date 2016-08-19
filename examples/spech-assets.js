@@ -12,7 +12,7 @@ app.intent('AwesomeIntent', 'You are awesome', (slots, attrs) => {
     return 'Yes';
 });
 
-const assets = app.speechAssets();
+const speechAssets = app.speechAssets();
 console.log(speechAssets.toString());
 
 module.exports = app;

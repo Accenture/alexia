@@ -9,7 +9,7 @@ const intentA = app.intent('intentA', 'clear my calendar for {date:Date}', (slot
             date: slots.date
         },
         end: false
-    }
+    };
 });
 
 // Or use built-in amazon intents. See: `examples/built-in-intents.js`
