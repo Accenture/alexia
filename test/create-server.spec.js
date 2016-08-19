@@ -33,19 +33,19 @@ describe('server', () => {
     it('should create working Hapi server', (done) => {
         const server = app.createServer(app);
 
-        server.start((serverError => {
-            // expect(serverError).to.be.not.ok;
+        server.start(serverError => {
+            expect(serverError).to.be.not.ok;
 
             // Send POST request to server
             request(createRequestOptions(server.info.uri), (requestError, response) => {
-                // expect(requestError).to.be.not.ok;
-                // expect(response.body).to.deep.equal(mockResponse);
-                // expect(response.statusCode === 200);
+                expect(requestError).to.be.not.ok;
+                expect(response.body).to.deep.equal(mockResponse);
+                expect(response.statusCode === 200);
 
                 done();
             });
 
-        }));
+        });
 
     });
 
