@@ -217,4 +217,13 @@ describe('basic app handler', () => {
         }
     });
 
+    it('should not create duplicate slot definition for multiple utterances', () => {
+        const app2 = alexia.createApp('App2');
+        app2.intent('SomeIntent', ['First utterance {number:Number}', 'Second utterance {number:Number}'], () => {
+            return 'Hey';
+        });
+
+        expect(app2.intents['SomeIntent'].slots).to.have.length(1);
+    });
+
 });

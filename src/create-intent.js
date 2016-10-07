@@ -60,15 +60,21 @@ const parseRichUtterances = (richUtterances, slots, utterances) => {
         var matches = findUtteranceMatches(utterance);
 
         _.each(matches, function(match) {
+            const slotName = match[1];
+            const slotType = match[2];
 
-            // Remember slot type
-            slots.push({
-                name: match[1],
-                type: transformSlotType(match[2])
-            });
+            // Prevent duplicate slot definition
+            if(!_.find(slots, {name: slotName})) {
+
+                // Remember slot type
+                slots.push({
+                    name: slotName,
+                    type: transformSlotType(slotType)
+                });
+            }
 
             // Replace utterance slot type (there could be multiple slots in utterance)
-            utterance = utterance.replace(match[0], '{' + match[1] + '}');
+            utterance = utterance.replace(match[0], '{' + slotName + '}');
         });
 
         if(validator.isUtteranceValid(utterance)) {

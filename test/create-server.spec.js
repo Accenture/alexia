@@ -42,6 +42,8 @@ describe('server', () => {
                 expect(response.body).to.deep.equal(mockResponse);
                 expect(response.statusCode === 200);
 
+                server.stop();
+
                 done();
             });
 
