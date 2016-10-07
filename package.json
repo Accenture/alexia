@@ -1,6 +1,6 @@
 {
   "name": "alexia",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A Framework for creating Amazon Echo (Alexa) skills using Node.js",
   "main": "src/alexia.js",
   "repository": {
@@ -26,11 +26,11 @@
   },
   "dependencies": {
     "bases": "^0.2.1",
+    "debug": "^2.2.0",
     "lodash": "^4.13.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "debug": "^2.2.0",
     "eslint": "^2.13.0",
     "hapi": "^13.5.2",
     "istanbul": "^0.4.3",
