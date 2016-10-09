@@ -81,8 +81,6 @@ const callHandler = (handler, slots, attrs, app, done) => {
     } else {
         handler(slots, attrs, optionsReady);
     }
-
-    handler(attrs, slots);
 };
 
 /**
