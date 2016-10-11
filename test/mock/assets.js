@@ -20,6 +20,7 @@ exports.intentSchema = {
         {intent: 'IntentA'},
         {intent: 'IntentB'},
         {intent: 'e'},
+        {intent: 'AnotherCardIntentSample'}
     ]
 };
 
@@ -37,7 +38,8 @@ exports.utterances = [
     'AMAZON.HelpIntent yup',
     'IntentA another utterance',
     'IntentB another utterance',
-    'e async response'
+    'e async response',
+    'AnotherCardIntentSample card intent'
 ];
 
 exports.customSlot = ['Borimir', 'Vlasto'];

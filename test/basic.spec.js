@@ -226,4 +226,11 @@ describe('basic app handler', () => {
         expect(app2.intents['SomeIntent'].slots).to.have.length(1);
     });
 
+    it('should handle AnotherCardIntentSample with card type', () => {
+        const request = createRequest.intentRequest('AnotherCardIntentSample', null, null, false, 'appId1');
+        app.handle(request, (response) => {
+            expect(response.response.card.type).to.equal('Standard');
+        });
+    });
+
 });

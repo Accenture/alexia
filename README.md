@@ -442,8 +442,6 @@ DEBUG=alexia:info npm start
 
 Alexia is an open source project and we encourage contributions. Please make sure to cover your code with unit tests.
 
-Please submit all pull requests into the **develop** branch.
-
 For more information refer to general guide [Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/)
 
 ## License

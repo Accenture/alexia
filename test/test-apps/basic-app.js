@@ -70,4 +70,16 @@ app.intent(null, 'async response', (slots, attrs, done) => {
     }, 120);
 });
 
+app.intent('AnotherCardIntentSample', 'card intent', () => {
+    return {
+        text: 'Hey',
+        card: {
+            type: 'Standard',
+            title: 'Hello',
+            content: 'Once upon a time ...'
+        },
+        end: false
+    };
+});
+
 module.exports = app;

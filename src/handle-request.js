@@ -195,16 +195,16 @@ const createOutputSpeechObject = (text, ssml) => {
 };
 
 /**
- * Creates card object and wraps it with card type
+ * Creates card object with default card type
  * @param {Object} card - Card object from responseData options
- * @returns {Object} card - Card object with type, title and content or undefined if card is not specified
+ * @returns {Object} card - Card object or undefined if card is not specified
  */
 const createCardObject = (card) => {
     if (card) {
-        return {
-            type: 'Simple',
-            title: card.title,
-            content: card.content
-        };
+        // Set default card type to 'Simple'
+        if(!card.type) {
+            card.type = 'Simple';
+        }
+        return card;
     }
 };
