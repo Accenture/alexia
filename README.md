@@ -8,7 +8,7 @@ A Framework for creating Amazon Echo (Alexa) skills using Node.js
 
 ```javascript
 const alexia = require('alexia');
-const app = alexia.createApp('HelloWorldApp');
+const app = alexia.createApp();
 
 app.intent('HelloIntent', 'Hello', () => {
     return 'Hello from Alexia app';
@@ -231,7 +231,7 @@ Directory structure looks like this:
 ```
 
 ```javascript
-app.saveSpeechAssets('myAssets'); // No argument leads to default value speechAssets
+app.saveSpeechAssets('speechAssets'); // No argument leads to default value 'speechAssets'
 ```
 
 ### Register Intents using pattern matching
