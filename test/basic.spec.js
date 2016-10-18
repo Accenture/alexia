@@ -58,7 +58,7 @@ describe('basic app handler', () => {
             sessionAttributes: {previousIntent: 'FirstIntent'},
             response: {
                 outputSpeech: {type: 'PlainText', text: 'All good'},
-                shouldEndSession: false
+                shouldEndSession: true
             }
         };
 

@@ -157,7 +157,7 @@ const createResponse = (options, slots, attrs, app) => {
         sessionAttributes: options.attrs ? options.attrs : attrs,
         response: {
             outputSpeech: outputSpeech,
-            shouldEndSession: options.end || false
+            shouldEndSession: options.end || true
         }
     };
 
