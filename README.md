@@ -225,8 +225,8 @@ Directory structure looks like this:
     ├── intentSchema.json
     ├── utterances.txt
     └── customSlots
-        ├── customSlotName.txt
-        ├── customSlotAge.txt
+        ├── Name.txt
+        ├── Age.txt
         ...
 ```
 
@@ -332,9 +332,7 @@ server.route({
 server.start((err) => {
     if (err) throw err;
     console.log('Server running at:', server.info.uri);
-
-    const speechAssets = app.speechAssets();
-    console.log(speechAssets.toString());
+    app.saveSpeechAssets();
 });
 ```
 
@@ -383,13 +381,13 @@ exports.handler = (event, context, callback) => {
     - Invocation Name: Short phrase or abbreviation of your app name. Will be used to start your app by saying: `Alexa, start MyApp` if your invocation name is `MyApp`
 
   **Interaction model**
-    - Use our generator `assets = app.generateSpeechAssets()` to generate speech assets
+    - Use our speech assets generator `app.saveSpeechAssets()` to generate and save speech assets to `speechAssets` directory
     - Custom Slot Types: Click `Add Slot Type`
         - Type: name of custom slot type
-        - Values: contents assets.customSlots.myCustomSlot or enter custom slot samples manually
+        - Values: contents of `speechAssets/customSlots/**` or enter custom slot samples manually
         - Do this for each custom slot
-    - Intent Schema: enter value of `assets.intentSchema`
-    - Sample Utterances: enter value of `assets.sampleUtterances`
+    - Intent Schema: enter contents of `speechAssets/intentSchema.json`
+    - Sample Utterances: enter contents of `speechAssets/sampleUtterances.txt`
 
   **Configuration**
     - Endpoint: select HTTPS and enter url or your publicly accesible server
