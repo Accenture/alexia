@@ -248,7 +248,7 @@ module.exports = app => app.intent('HelloIntent', 'hello', () => {
 
 Next you need to register it by importing it manually and supplying the `app` as a parameter.
 
-You can also use our shorthand function for finding and registering all intents files that match pattern
+You can also use our shorthand function for finding and registering all intents files that match pattern. See [node-glob](https://github.com/isaacs/node-glob) for more pattern matching examples
 
 **src/app.js**
 
