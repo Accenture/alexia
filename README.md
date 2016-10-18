@@ -234,6 +234,28 @@ Directory structure looks like this:
 app.saveSpeechAssets('myAssets'); // No argument leads to default value speechAssets
 ```
 
+### Register Intents using pattern matching
+
+If your intents are located in separate files you need to register them to the app. One way how to do this is to wrap intent into function taking `app` as a parameter.
+
+**src/intents/hello-intent.js**
+
+```javascript
+module.exports = app => app.intent('HelloIntent', 'hello', () => {
+    return 'Hello';
+});
+```
+
+Next you need to register it by importing it manually and supplying the `app` as a parameter.
+
+You can also use our shorthand function for finding and registering all intents files that match pattern
+
+**src/app.js**
+
+```javascript
+app.registerIntents('src/intents/*-intent.js');
+```
+
 ### Actions
 
 Feature of Alexia that helps you to control flow of the intents. To understand it easier see the code below.
