@@ -1,6 +1,9 @@
 'use strict';
 const _ = require('lodash');
-const error = require('debug')('alexia:error');
+const nodeDebug = require('debug');
+const glob = require('glob');
+const path = require('path');
+
 const handleRequest = require('./handle-request');
 const createIntent = require('./create-intent');
 const createCustomSlot = require('./create-custom-slot');
@@ -10,6 +13,8 @@ const builtInIntentsMap = require('./built-in-intents-map');
 const createServer = require('./create-server');
 
 const builtInIntentsList = _.keys(builtInIntentsMap).join(', ');
+const error = nodeDebug('alexia:error');
+const debug = nodeDebug('alexia:debug');
 
 /**
  * Create new app
@@ -155,6 +160,26 @@ module.exports = (name, options) => {
      */
     app.createServer = (options) => {
         return createServer(app, options);
+    };
+
+    /**
+     * Registers all intents matching specified pattern
+     * @param {string} pattern - Pattern used for intent matching. Must be relative to project root. Example: 'src/intents/**.js'
+     */
+    app.registerIntents = (pattern) => {
+
+        const files = glob.sync(pattern);
+
+        if(files.length === 0) {
+            error(`No intents found using pattern '${pattern}'`);
+            return;
+        }
+
+        files.forEach(intentFile => {
+            debug(`Registering intent '${intentFile}'`);
+            require(path.relative(__dirname, intentFile))(app);
+        });
+
     };
 
     return app;
