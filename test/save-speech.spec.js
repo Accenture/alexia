@@ -35,7 +35,7 @@ describe('saveSpeechAssets', () => {
         });
 
         it('should save customSlots to separate files', () => {
-            const customSlot = fs.readFileSync('speechAssets/customSlots/customSlotName.txt', 'utf8');
+            const customSlot = fs.readFileSync('speechAssets/customSlots/Name.txt', 'utf8');
             expect(customSlot.split('\n')).to.deep.equal(assetsMock.customSlot);
         });
     });
@@ -48,7 +48,7 @@ describe('saveSpeechAssets', () => {
             saveAssets(done, mySpeechAssetsDirectory, mySpeechAssetsDirectory);
         });
 
-        it('should save customSlots to customDirectory ', () => {
+        it('should save speechAssets to customDirectory ', () => {
             const intentSchema = fs.readFileSync(mySpeechAssetsDirectory + '/intentSchema.json', 'utf8');
             expect(JSON.parse(intentSchema)).to.deep.equal(assetsMock.intentSchema);
         });

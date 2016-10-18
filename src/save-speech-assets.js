@@ -9,7 +9,7 @@ module.exports = (assets, directory) => {
     const customSlotsDir = path.join(directory, 'customSlots');
     Object.keys(assets.customSlots).forEach((key) => {
         const newLineFormat = assets.customSlots[key].join('\n');
-        saveToFile(newLineFormat, 'txt', `customSlot${key}`, customSlotsDir);
+        saveToFile(newLineFormat, 'txt', `${key}`, customSlotsDir);
     });
 };
 
