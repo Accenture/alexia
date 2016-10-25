@@ -233,4 +233,11 @@ describe('basic app handler', () => {
         });
     });
 
+    it('should handle AnotherCardIntentSample with shouldEndSession false', () => {
+        const request = createRequest.intentRequest('AnotherCardIntentSample', null, null, false, 'appId1');
+        app.handle(request, (response) => {
+            expect(response.response.shouldEndSession).to.equal(false);
+        });
+    });
+
 });

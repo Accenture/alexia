@@ -141,6 +141,13 @@ const checkActionsAndHandle = (intent, slots, attrs, app, handlers, done) => {
     }
 };
 
+const calculate = (options) => {
+  if(!options || options.end === undefined) {
+    return true;
+  }
+  return options.end;
+}
+
 const createResponse = (options, slots, attrs, app) => {
     // Convert text options to object
     if(typeof(options) === 'string') {
@@ -152,12 +159,14 @@ const createResponse = (options, slots, attrs, app) => {
     // Create outputSpeech object for text or ssml
     const outputSpeech = createOutputSpeechObject(options.text, options.ssml);
 
+
+
     let responseObject = {
         version: app.options ? app.options.version : '0.0.1',
         sessionAttributes: options.attrs ? options.attrs : attrs,
         response: {
             outputSpeech: outputSpeech,
-            shouldEndSession: options.end || true
+            shouldEndSession: calculate(options)
         }
     };
 
