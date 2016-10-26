@@ -141,12 +141,18 @@ const checkActionsAndHandle = (intent, slots, attrs, app, handlers, done) => {
     }
 };
 
-const calculate = (options) => {
+/**
+ * Reads options.end
+ * @param {object} [options] Options object
+ * @param {bool} options.end Indicates whether to end session. Defaults to true
+ * @returns bool from options.end or by default true
+ */
+const getShouldEndSession = (options) => {
   if(!options || options.end === undefined) {
     return true;
   }
   return options.end;
-}
+};
 
 const createResponse = (options, slots, attrs, app) => {
     // Convert text options to object
@@ -159,14 +165,12 @@ const createResponse = (options, slots, attrs, app) => {
     // Create outputSpeech object for text or ssml
     const outputSpeech = createOutputSpeechObject(options.text, options.ssml);
 
-
-
     let responseObject = {
         version: app.options ? app.options.version : '0.0.1',
         sessionAttributes: options.attrs ? options.attrs : attrs,
         response: {
             outputSpeech: outputSpeech,
-            shouldEndSession: calculate(options)
+            shouldEndSession: getShouldEndSession(options)
         }
     };
 
