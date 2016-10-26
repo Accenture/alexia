@@ -22,11 +22,13 @@
     "lint:fix": "npm run lint -- --fix",
     "test": "istanbul cover node_modules/mocha/bin/_mocha -- -u exports --reporter spec",
     "test-lcov": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- -u exports --reporter spec",
-    "test:dev": "nodemon --exec \"mocha || true\""
+    "test:dev": "nodemon --exec \"mocha || true\"",
+    "toc": "doctoc README.md --github"
   },
   "dependencies": {
     "bases": "^0.2.1",
     "debug": "^2.2.0",
+    "doctoc": "^1.2.0",
     "glob": "^7.1.1",
     "lodash": "^4.13.1"
   },
