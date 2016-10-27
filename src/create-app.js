@@ -11,9 +11,9 @@ const generateSpeechAssets = require('./generate-speech-assets');
 const saveSpeechAssets = require('./save-speech-assets');
 const builtInIntentsMap = require('./built-in-intents-map');
 const createServer = require('./create-server');
+const parseError = require('./error-handler').parseError;
 
 const builtInIntentsList = _.keys(builtInIntentsMap).join(', ');
-const error = nodeDebug('alexia:error');
 const debug = nodeDebug('alexia:debug');
 
 /**
@@ -85,8 +85,8 @@ module.exports = (name, options) => {
     app.builtInIntent = (name, utterances, handler) => {
         // Validate built-in intent name
         if(!builtInIntentsMap[name]) {
-            error(`Built-in Intent name: "${name}" is invalid`);
-            throw new Error(`Built-in Intent name ${name} is invalid. Please use one of: ${builtInIntentsList}`);
+            const e = parseError(new Error(`Built-in Intent name ${name} is invalid. Please use one of: ${builtInIntentsList}`));
+            throw e;
         }
 
         // Shift ommited arguments (utternaces are optional)
@@ -171,8 +171,7 @@ module.exports = (name, options) => {
         const files = glob.sync(pattern);
 
         if(files.length === 0) {
-            error(`No intents found using pattern '${pattern}'`);
-            return;
+            console.warn(`No intents found using pattern '${pattern}'`);
         }
 
         files.forEach(intentFile => {

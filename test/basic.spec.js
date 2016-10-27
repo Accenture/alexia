@@ -110,22 +110,34 @@ describe('basic app handler', () => {
         });
     });
 
+    it('should create intent with utterances using space, dot, hyphen & apostrophe', () => {
+        const app2 = alexia.createApp('App2');
+        app2.intent('MegaIntent', 'Not good -\' .. ', () => 'Nope');
+        expect(app2.intents.MegaIntent.name).to.equal('MegaIntent');
+    });
+
+    it('should create custom slot with name using underscores', () => {
+        const app2 = alexia.createApp('App2');
+        app2.customSlot('NEXT_SLOT', ['next please']);
+        expect(app2.customSlots.NEXT_SLOT.name).to.equal('NEXT_SLOT');
+    });
+
     it('should not handle request for wrong app id', () => {
         const app2 = alexia.createApp('App2', {ids: 'supported-app-id'});
         try {
             app2.handle(createRequest.launchRequest(null, 'wrong-app-id'));
             throw new Error('App was handled with unsupported application id');
         } catch(e) {
-            expect(e.message).to.equal('Application id is not valid');
+            expect(e).to.include('Application id: \'supported-app-id\' is not valid');
         }
     });
 
-    it('should not handle unsupported intent', () => {
+    it('should not handle nonexistent intent', () => {
         const request = createRequest.intentRequest('UnsupportedIntentName', null, null, false, 'appId1');
         try {
             app.handle(request);
         } catch(e) {
-            expect(e.message).to.equal('Unsupported intent: \'UnsupportedIntentName\'');
+            expect(e).to.include('Nonexistent intent: \'UnsupportedIntentName\'');
         }
     });
 
@@ -135,7 +147,7 @@ describe('basic app handler', () => {
         try {
             app.handle(request);
         } catch(e) {
-            expect(e.message).to.equal('Unsupported request: \'UnsupportedRequestType\'');
+            expect(e).to.include('Unsupported request: \'UnsupportedRequestType\'');
         }
     });
 
@@ -146,7 +158,7 @@ describe('basic app handler', () => {
             app2.customSlot('MyCustomSlot', []); // redefine
             throw new Error('App was handled with custom slot redefinition');
         } catch(e) {
-            expect(e.message).to.equal('Slot with name MyCustomSlot is already defined');
+            expect(e).to.include('Slot with name MyCustomSlot is already defined');
         }
     });
 
@@ -156,14 +168,14 @@ describe('basic app handler', () => {
             app2.customSlot('Number', []);
             throw new Error('App was handled with custom slot redefinition');
         } catch(e) {
-            expect(e.message).to.equal('Slot with name Number is already defined in built-in slots');
+            expect(e).to.include('Slot with name Number is already defined in built-in slots');
         }
 
         try {
             app2.customSlot('AMAZON.NUMBER', []);
             throw new Error('App was handled with custom slot redefinition');
         } catch(e) {
-            expect(e.message).to.equal('Slot with name AMAZON.NUMBER is already defined in built-in slots');
+            expect(e).to.include('Slot with name AMAZON.NUMBER is already defined in built-in slots');
         }
     });
 
@@ -173,7 +185,7 @@ describe('basic app handler', () => {
             app2.intent('MegaIntent', 'Not good* utterance *-#$%^&*', () => 'Nope');
             throw new Error('App was handled with invalid intent utterance');
         } catch(e) {
-            expect(e.message).to.equal('Sample utterance: \'Not good* utterance *-#$%^&*\' is not valid. Each sample utterance must consist only of alphabet characters, spaces, dots, hyphens, brackets and single quotes');
+            expect(e).to.include('Sample utterance: \'Not good* utterance *-#$%^&*\' is not valid. Each sample utterance must consist only of alphabet characters, spaces, dots, hyphens, brackets and single quotes');
         }
     });
 
@@ -183,7 +195,7 @@ describe('basic app handler', () => {
             app2.intent('Mega -.- Intent o/', 'Hi', () => 'Nope bye');
             throw new Error('App was handled with invalid intent name');
         } catch(e) {
-            expect(e.message).to.equal('Intent name Mega -.- Intent o/ is invalid. Only lowercase and uppercase letters are allowed');
+            expect(e).to.include('Intent name Mega -.- Intent o/ is invalid. Only lowercase and uppercase letters are allowed');
         }
     });
 
@@ -193,7 +205,7 @@ describe('basic app handler', () => {
             app2.builtInIntent('InvalidBuiltInIntent', 'stop pls', () => 'hi');
             throw new Error('App was handled with invalid Built-in Intent name');
         } catch(e) {
-            expect(e.message).to.equal('Built-in Intent name InvalidBuiltInIntent is invalid. Please use one of: cancel, help, next, no, pause, previous, repeat, resume, startOver, stop, yes');
+            expect(e).to.include('Built-in Intent name InvalidBuiltInIntent is invalid. Please use one of: cancel, help, next, no, pause, previous, repeat, resume, startOver, stop, yes');
         }
     });
 
@@ -203,7 +215,7 @@ describe('basic app handler', () => {
             app2.customSlot('Mega -.- CustomSlot /-', []);
             throw new Error('App was handled with invalid custom slot name');
         } catch(e) {
-            expect(e.message).to.equal('Custom slot name Mega -.- CustomSlot /- is invalid. Only lowercase and uppercase letters are allowed');
+            expect(e).to.include('Custom slot name Mega -.- CustomSlot /- is invalid. Only lowercase, uppercase letters and underscores are allowed');
         }
     });
 
@@ -213,7 +225,7 @@ describe('basic app handler', () => {
             app2.customSlot('MyCustomSlot', ['Nope ***']);
             throw new Error('App was handled with invalid custom slot sample utterance');
         } catch(e) {
-            expect(e.message).to.equal('Custom slot with name MyCustomSlot contains invalid sample utterance: Nope ***');
+            expect(e).to.include('Custom slot with name MyCustomSlot contains invalid special character(~, ^, *, (, ), [, ], §, !, ?, ;, :, " and |): Nope ***');
         }
     });
 

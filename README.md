@@ -442,7 +442,6 @@ Examples:
 
 - `DEBUG=alexia:info` - print only info logs
 - `DEBUG=alexia:debug` - print only debug logs
-- `DEBUG=alexia:error` - print only error logs
 - `DEBUG=alexia:*` - print all logs
 
 To start your app with info logs run in terminal:
