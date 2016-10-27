@@ -141,6 +141,19 @@ const checkActionsAndHandle = (intent, slots, attrs, app, handlers, done) => {
     }
 };
 
+/**
+ * Reads options.end and returns bool indicating whether to end session
+ * @param {object} [options] Options object
+ * @param {bool} options.end Indicates whether to end session. Defaults to true
+ * @returns bool from options.end or by default true
+ */
+const getShouldEndSession = (options) => {
+  if(!options || options.end === undefined) {
+    return true;
+  }
+  return options.end;
+};
+
 const createResponse = (options, slots, attrs, app) => {
     // Convert text options to object
     if(typeof(options) === 'string') {
@@ -157,7 +170,7 @@ const createResponse = (options, slots, attrs, app) => {
         sessionAttributes: options.attrs ? options.attrs : attrs,
         response: {
             outputSpeech: outputSpeech,
-            shouldEndSession: options.end || true
+            shouldEndSession: getShouldEndSession(options)
         }
     };
 
