@@ -142,6 +142,21 @@ const checkActionsAndHandle = (intent, slots, attrs, app, handlers, done) => {
 };
 
 /**
+ * Creates card object with default card type
+ * @param {Object} card - Card object from responseData options
+ * @returns {Object} card - Card object or undefined if card is not specified
+ */
+const createCardObject = (card) => {
+    if (card) {
+        // Set default card type to 'Simple'
+        if(!card.type) {
+            card.type = 'Simple';
+        }
+        return card;
+    }
+};
+
+/**
  * Reads options.end and returns bool indicating whether to end session
  * @param {object} [options] Options object
  * @param {bool} options.end Indicates whether to end session. Defaults to true
@@ -165,9 +180,20 @@ const createResponse = (options, slots, attrs, app) => {
     // Create outputSpeech object for text or ssml
     const outputSpeech = createOutputSpeechObject(options.text, options.ssml);
 
+    let sessionAttributes;
+    if(options.attrs) {
+        // Use session attributes from responseObject and remember previousIntent
+        sessionAttributes = options.attrs;
+        sessionAttributes.previousIntent = attrs.previousIntent;
+
+    } else {
+        // No session attributes specified in user response
+        sessionAttributes = attrs;
+    }
+
     let responseObject = {
         version: app.options ? app.options.version : '0.0.1',
-        sessionAttributes: options.attrs ? options.attrs : attrs,
+        sessionAttributes: sessionAttributes,
         response: {
             outputSpeech: outputSpeech,
             shouldEndSession: getShouldEndSession(options)
@@ -205,19 +231,4 @@ const createOutputSpeechObject = (text, ssml) => {
         outputSpeech.ssml = text;
     }
     return outputSpeech;
-};
-
-/**
- * Creates card object with default card type
- * @param {Object} card - Card object from responseData options
- * @returns {Object} card - Card object or undefined if card is not specified
- */
-const createCardObject = (card) => {
-    if (card) {
-        // Set default card type to 'Simple'
-        if(!card.type) {
-            card.type = 'Simple';
-        }
-        return card;
-    }
 };
