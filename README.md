@@ -45,6 +45,45 @@ Optional: requires [Handling Amazon Requests manually](#handling-amazon-requests
 
 Alexia helps you to write Amazon Echo skills using Node.js. This framework handles Amazon Echo requests and automatically calls intents in your application. See the [Features and Samples](#features-and-samples)
 
+## Table of Contents
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Terminology](#terminology)
+- [Features and Samples](#features-and-samples)
+  - [Create App](#create-app)
+  - [Create Intents](#create-intents)
+  - [Create Welcome Message](#create-welcome-message)
+  - [Built-in Intents](#built-in-intents)
+  - [Slots](#slots)
+  - [Custom Slots](#custom-slots)
+  - [Session Attributes](#session-attributes)
+  - [Cards](#cards)
+  - [Reprompt](#reprompt)
+  - [SSML](#ssml)
+  - [Asynch Intent Handling](#asynch-intent-handling)
+  - [Generate Speech Assets](#generate-speech-assets)
+  - [Save Speech Assets To Directory](#save-speech-assets-to-directory)
+  - [Register Intents using pattern matching](#register-intents-using-pattern-matching)
+  - [Actions](#actions)
+  - [Handling Amazon Requests](#handling-amazon-requests)
+  - [Handling Amazon Requests Manually](#handling-amazon-requests-manually)
+- [Deploy](#deploy)
+  - [Heroku](#heroku)
+  - [AWS Lambda](#aws-lambda)
+- [Create Alexa skill](#create-alexa-skill)
+- [Testing](#testing)
+  - [Device Testing](#device-testing)
+  - [Echoism.io (Online Simulator)](#echoismio-online-simulator)
+  - [Unit Testing](#unit-testing)
+- [Debugging](#debugging)
+- [Scripts](#scripts)
+- [Contributing](#contributing)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Terminology
 
 Creating new skills for Amazon Echo using alexia requires you to understand some basic terms. This part should clarify the most of them.
@@ -456,10 +495,13 @@ DEBUG=alexia:info npm start
 - `npm test:dev` - run unit tests in development mode using nodemon as watcher
 - `npm run lint` - run eslint
 - `npm run lint:fix` - run eslint and automatically fix problems
+- `npm run toc` - update TOC in README.md
 
 ## Contributing
 
 Alexia is an open source project and we encourage contributions. Please make sure to cover your code with unit tests.
+
+After updating README.md please run: `npm run toc`
 
 For more information refer to general guide [Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/)
 
