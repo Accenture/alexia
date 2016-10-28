@@ -21,6 +21,15 @@ app.intent('IntentD', 'no', () => {
 	return 'Testing actions2';
 });
 
+app.intent('IntentE', 'maybe', (slots, attrs, done) => {
+	done({
+        text: 'Testing async actions3 with responseObject attrs',
+        attrs: {
+            foo: true
+        }
+    });
+});
+
 app.action({from: '*', to: 'IntentA'});
 
 app.action({
@@ -41,5 +50,7 @@ app.action({
     to: 'IntentD',
     if: () => 1 === 2
 });
+
+app.action({from: '*', to: 'IntentE'});
 
 module.exports = app;

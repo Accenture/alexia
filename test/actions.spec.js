@@ -60,4 +60,14 @@ describe('action app handler', () => {
             expect(response.response.outputSpeech.text).to.equal('Sry bye');
         });
     });
+
+    it('should handle async IntentE with session attributes', () => {
+        const request = createRequest.intentRequest('IntentE', null, attrs);
+        app.handle(request, (response) => {
+            expect(response.sessionAttributes).to.deep.equal({
+                previousIntent: 'IntentE',
+                foo: true
+            });
+        });
+    });
 });

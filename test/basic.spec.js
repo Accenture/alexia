@@ -83,7 +83,7 @@ describe('basic app handler', () => {
 
        app.handle(request, (response) => {
            attrs = response.sessionAttributes;
-           expect(attrs).to.deep.equal({yes:true});
+           expect(attrs).to.deep.equal({previousIntent: 'IntentA', yes: true});
            expect(response.response.outputSpeech).to.deep.equal({type:'SSML', ssml:'<speak>Hi</speak>'});
            expect(response.response.reprompt).to.deep.equal({outputSpeech: {type:'SSML', ssml:'<speak>Sup</speak>'}});
            done();
