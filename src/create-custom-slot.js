@@ -1,9 +1,9 @@
 'use strict';
 const _ = require('lodash');
-const error = require('debug')('alexia:error');
 const builtInSlotsMap = require('./built-in-slots-map');
 const validator = require('./validator');
 const builtInSlotsValues = _.values(builtInSlotsMap);
+const parseError = require('./error-handler').parseError;
 
 /**
  * Creates custom slot. Checks if custom slot name is not conflicting with amazon built in slots
@@ -14,24 +14,24 @@ const builtInSlotsValues = _.values(builtInSlotsMap);
 module.exports = (customSlots, name, samples) => {
 
     if(customSlots[name]) {
-        error(`Slot with name "${name}" is already defined`);
-        throw new Error(`Slot with name ${name} is already defined`);
+        const e = parseError(new Error(`Slot with name ${name} is already defined`));
+        throw e;
     }
 
     if(builtInSlotsMap[name] || builtInSlotsValues.indexOf(name) !== -1) {
-        error(`Slot with name "${name}" is already defined in built-in slots`);
-        throw new Error(`Slot with name ${name} is already defined in built-in slots`);
+        const e = parseError(new Error(`Slot with name ${name} is already defined in built-in slots`));
+        throw e;
     }
 
-    if(!validator.isNameValid(name)) {
-        error(`Custom slot name "${name}" is invalid.`);
-        throw new Error(`Custom slot name ${name} is invalid. Only lowercase and uppercase letters are allowed`);
+    if(!validator.isCustomSlotNameValid(name)) {
+        const e = parseError(new Error(`Custom slot name ${name} is invalid. Only lowercase, uppercase letters and underscores are allowed`));
+        throw e;
     }
 
     samples.forEach(sample => {
-        if(!validator.isUtteranceValid(sample)) {
-            error(`Custom slot with name "${name}" contains invalid sample utterance: '${sample}'`);
-            throw new Error(`Custom slot with name ${name} contains invalid sample utterance: ${sample}`);
+        if(validator.isCustomSlotValueValid(sample)) {
+            const e = parseError(new Error(`Custom slot with name ${name} contains invalid special character(~, ^, *, (, ), [, ], §, !, ?, ;, :, " and |): ${sample}`));
+            throw e;
         }
     });
 

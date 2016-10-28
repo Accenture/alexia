@@ -1,10 +1,10 @@
 'use strict';
 const _ = require('lodash');
-const error = require('debug')('alexia:error');
 const bases = require('bases');
 const builtInSlotsMap = require('./built-in-slots-map');
 const builtInIntentsMap = require('./built-in-intents-map');
 const validator = require('./validator');
+const parseError = require('./error-handler').parseError;
 
 /**
  * Creates intent
@@ -22,9 +22,8 @@ module.exports = (intents, name, richUtterances, handler) => {
         name = generateIntentName(intents);
 
     } else if(!validator.isNameValid(name)) {
-        error(`Intent name: "${name}" is invalid`);
-        throw Error(`Intent name ${name} is invalid. Only lowercase and uppercase letters are allowed`);
-
+        const e = parseError(new Error(`Intent name ${name} is invalid. Only lowercase and uppercase letters are allowed`));
+        throw e;
     } else if(builtInIntentsMap[name]) {
         // If built-in intent name was used map intent name to it
         name = builtInIntentsMap[name];
@@ -54,6 +53,8 @@ const generateIntentName = (intents) => {
     return generatedName;
 };
 
+
+
 const parseRichUtterances = (richUtterances, slots, utterances) => {
     // Iterate over each rich utterance and transform it by removing slots description
     _.each(richUtterances, function(utterance) {
@@ -81,8 +82,8 @@ const parseRichUtterances = (richUtterances, slots, utterances) => {
             // Remember utterance
             utterances.push(utterance);
         } else {
-            error(`Sample utterance: "${utterance}" is not valid`);
-            throw new Error(`Sample utterance: '${utterance}' is not valid. Each sample utterance must consist only of alphabet characters, spaces, dots, hyphens, brackets and single quotes`);
+            const e = parseError(new Error(`Sample utterance: '${utterance}' is not valid. Each sample utterance must consist only of alphabet characters, spaces, dots, hyphens, brackets and single quotes`));
+            throw e;
         }
 
     });
@@ -96,8 +97,8 @@ const transformSlotType = (type) => {
 const findUtteranceMatches = (utterance) => {
   // Example: for 'move forward by {value:Number}' we get:
   // [[ '{value:Number}', 'value', 'Number', index: 16, input: 'move forward by {value:Number}' ]]
-  var myregex = /{(.*?):(.*?)\}/gmi;
-  var result, allMatches = [];
+  const myregex = /{(.*?):(.*?)\}/gmi;
+  let result, allMatches = [];
 
   while((result = myregex.exec(utterance)) != null) {
       allMatches.push(result);

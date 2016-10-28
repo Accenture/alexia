@@ -6,7 +6,7 @@ const _ = require('lodash');
  */
 const requestBuilder = (requestType, intent, isNew, attrs, appId) => {
 
-    var request = {
+    const request = {
         session: {
             attributes: attrs || {},
             sessionId: 'SessionId.357a6s7',

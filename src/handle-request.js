@@ -1,8 +1,8 @@
 'use strict';
 const _ = require('lodash');
 const debug = require('debug')('alexia:debug');
-const error = require('debug')('alexia:error');
 const info = require('debug')('alexia:info');
+const parseError = require('./error-handler').parseError;
 
 /**
  * Handles request and calls done when finished
@@ -17,8 +17,8 @@ module.exports = (app, request, handlers, done) => {
 
     // Application ids is specified and does not contain app id in request
     if(options && options.ids && options.ids.length > 0 && options.ids.indexOf(appId) === -1) {
-        error(`Request NOT handled - invalid application ID: "${options.ids}"`);
-        throw new Error('Application id is not valid');
+        const e = parseError(new Error(`Application id: '${options.ids}' is not valid`));
+        throw e;
     }
 
     if(request.session.new) {
@@ -45,8 +45,8 @@ module.exports = (app, request, handlers, done) => {
 
             info(`Handling intent: "${intentName}"`);
             if(!intent) {
-                error(`Request NOT handled - unsupported intent: "${intentName}"`);
-                throw new Error(`Unsupported intent: '${intentName}'`);
+                const e = parseError(new Error(`Nonexistent intent: '${intentName}'`));
+                throw e;
             }
 
             checkActionsAndHandle(intent, request.request.intent.slots, request.session.attributes, app, handlers, done);
@@ -57,8 +57,8 @@ module.exports = (app, request, handlers, done) => {
             break;
 
         default:
-            error(`Request NOT handled - unsupported request type: "${requestType}"`);
-            throw new Error(`Unsupported request: '${requestType}'`);
+            const e = parseError(new Error(`Unsupported request: '${requestType}'`));
+            throw e;
     }
 
 };
@@ -107,7 +107,7 @@ const checkActionsAndHandle = (intent, slots, attrs, app, handlers, done) => {
 
     } else {
         // If there are some actions, try to validate current transition
-        var action = _.find(app.actions, {from: attrs.previousIntent, to: intent.name});
+        let action = _.find(app.actions, {from: attrs.previousIntent, to: intent.name});
 
         // Try to find action with wildcards if no action was found
         if(!action) {

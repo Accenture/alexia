@@ -23,6 +23,15 @@ describe('action app handler', () => {
         });
     });
 
+    it('should not handle nonexistent intent and throw error', () => {
+        const request = createRequest.intentRequest('IntentZ', null, attrs);
+        try {
+            app.handle(request);
+        } catch(e) {
+            expect(e).to.include('Nonexistent intent: \'IntentZ\'');
+        }
+    });
+
     it('should not handle IntentB again', () => {
         const request = createRequest.intentRequest('IntentB', null, attrs);
         app.handle(request, (response) => {

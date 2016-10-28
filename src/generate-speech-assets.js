@@ -45,12 +45,12 @@ const createAsset = (type, data) => {
  * @return {string} strigified intent schema object generated from intents
  */
 const genIntentSchema = (intents) => {
-    var intentSchema = {
+    let intentSchema = {
         intents: []
     };
 
     _.forOwn(intents, intent => {
-        var currentSchema = {
+        let currentSchema = {
             intent: intent.name
         };
 
@@ -88,7 +88,7 @@ const genUtterances = (intents) => {
  * custom slot type samples
  */
 const genCustomSlots = (customSlots) => {
-    var allCustomSlotSamples = {};
+    let allCustomSlotSamples = {};
 
     _.forOwn(customSlots, (customSlot) => {
         allCustomSlotSamples[customSlot.name] = customSlot.samples;
