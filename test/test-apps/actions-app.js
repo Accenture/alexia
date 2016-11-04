@@ -21,7 +21,7 @@ app.intent('IntentD', 'no', () => {
 	return 'Testing actions2';
 });
 
-app.intent('IntentE', 'maybe', (slots, attrs, done) => {
+app.intent('IntentE', 'maybe', (slots, attrs, data, done) => {
 	done({
         text: 'Testing async actions3 with responseObject attrs',
         attrs: {

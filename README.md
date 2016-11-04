@@ -225,12 +225,23 @@ app.intent('SSMLIntent', 'what are the digits of number {num:Number}', (slots) =
 });
 ```
 
-### Asynch Intent Handling
+### Read Original Request Data
 
-For asynchronous intent handling add third parameter to your handler callback and call it when your response is ready. The response structure is identical to responseObject
+You can access the original Amazon request data from third parameter of handler. See example below.
 
 ```javascript
-app.intent('AsyncIntent', 'Search for something in database', (slots, attrs, done) => {
+app.intent('OriginalRequestData', 'read original request data', (slots, attrs, data) => {
+    console.log('userId', data.session.user.userId);
+    return 'Hi';
+});
+```
+
+### Asynch Intent Handling
+
+For asynchronous intent handling add fourth parameter to your handler callback and call it when your response is ready. The response structure is identical to responseObject.
+
+```javascript
+app.intent('AsyncIntent', 'Search for something in database', (slots, attrs, data, done) => {
     setTimeout(() => {
         done('Work complete');
     }, 120);
