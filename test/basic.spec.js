@@ -128,7 +128,7 @@ describe('basic app handler', () => {
             app2.handle(createRequest.launchRequest(null, 'wrong-app-id'));
             throw new Error('App was handled with unsupported application id');
         } catch(e) {
-            expect(e).to.include('Application id: \'supported-app-id\' is not valid');
+            expect(e).to.include('Application id: \'wrong-app-id\' is not valid');
         }
     });
 

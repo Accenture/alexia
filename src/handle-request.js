@@ -7,41 +7,41 @@ const parseError = require('./error-handler').parseError;
 /**
  * Handles request and calls done when finished
  * @param {Object} app - Application object
- * @param {Object} request - Request JSON to be handled
+ * @param {Object} data - Request JSON to be handled
  * @param {Function} handlers - Handlers to be called. Contains onStart, onEnd, actionFail
  * @param {Function} done - Callback to be called when request is handled. Callback is called with one argument - response JSON
  */
-module.exports = (app, request, handlers, done) => {
-    const appId = request.session.application.applicationId;
+module.exports = (app, data, handlers, done) => {
+    const appId = data.session.application.applicationId;
     const options = app.options;
 
     // Application ids is specified and does not contain app id in request
     if(options && options.ids && options.ids.length > 0 && options.ids.indexOf(appId) === -1) {
-        const e = parseError(new Error(`Application id: '${options.ids}' is not valid`));
+        const e = parseError(new Error(`Application id: '${appId}' is not valid`));
         throw e;
     }
 
-    if(request.session.new) {
-        request.session.attributes = {
+    if(data.session.new) {
+        data.session.attributes = {
             previousIntent: '@start'
         };
-    } else if(!request.session.attributes) {
-        request.session.attributes = {};
+    } else if(!data.session.attributes) {
+        data.session.attributes = {};
     }
 
-    const requestType = request.request.type;
+    const requestType = data.request.type;
 
     info(`Handling request: "${requestType}"`);
-    debug(`Request payload: ${JSON.stringify(request, null, 2)}`);
+    debug(`Request payload: ${JSON.stringify(data, null, 2)}`);
     switch (requestType) {
 
         case 'LaunchRequest':
-            callHandler(handlers.onStart, null, request.session.attributes, app, done);
+            callHandler(handlers.onStart, null, data.session.attributes, app, data, done);
             break;
 
         case 'IntentRequest':
-            const intentName = request.request.intent.name;
-            const intent = app.intents[request.request.intent.name];
+            const intentName = data.request.intent.name;
+            const intent = app.intents[data.request.intent.name];
 
             info(`Handling intent: "${intentName}"`);
             if(!intent) {
@@ -49,11 +49,11 @@ module.exports = (app, request, handlers, done) => {
                 throw e;
             }
 
-            checkActionsAndHandle(intent, request.request.intent.slots, request.session.attributes, app, handlers, done);
+            checkActionsAndHandle(intent, data.request.intent.slots, data.session.attributes, app, handlers, data, done);
             break;
 
         case 'SessionEndedRequest':
-            callHandler(handlers.onEnd, null, request.session.attributes, app, done);
+            callHandler(handlers.onEnd, null, data.session.attributes, app, data, done);
             break;
 
         default:
@@ -63,7 +63,7 @@ module.exports = (app, request, handlers, done) => {
 
 };
 
-const callHandler = (handler, slots, attrs, app, done) => {
+const callHandler = (handler, slots, attrs, app, data, done) => {
 
     // Transform slots into simple key:value schema
     slots = _.transform(slots, (result, value) => {
@@ -76,10 +76,10 @@ const callHandler = (handler, slots, attrs, app, done) => {
 
     // Handle intent synchronously if has < 3 arguments. 3rd is `done`
     if(handler.length < 3) {
-        optionsReady(handler(slots, attrs));
+        optionsReady(handler(slots, attrs, data));
 
     } else {
-        handler(slots, attrs, optionsReady);
+        handler(slots, attrs, data, optionsReady);
     }
 };
 
@@ -96,14 +96,15 @@ const callHandler = (handler, slots, attrs, app, done) => {
  * @param attrs
  * @param app
  * @param handlers
+ * @param data
  * @param done
  */
-const checkActionsAndHandle = (intent, slots, attrs, app, handlers, done) => {
+const checkActionsAndHandle = (intent, slots, attrs, app, handlers, data, done) => {
 
     if (app.actions.length === 0) {
         // There are no actions. Just call handler on this intent
         attrs.previousIntent = intent.name;
-        callHandler(intent.handler, slots, attrs, app, done);
+        callHandler(intent.handler, slots, attrs, app, data, done);
 
     } else {
         // If there are some actions, try to validate current transition
@@ -124,19 +125,19 @@ const checkActionsAndHandle = (intent, slots, attrs, app, handlers, done) => {
 
                 // Transition is valid. Remember intentName and handle intent
                 attrs.previousIntent = intent.name;
-                callHandler(intent.handler, slots, attrs, app, done);
+                callHandler(intent.handler, slots, attrs, app, data, done);
 
             } else {
                 // Transition is invalid. Call fail function
                 if(action.fail) {
-                    callHandler(action.fail, slots, attrs, app, done);
+                    callHandler(action.fail, slots, attrs, app, data, done);
                 } else {
-                    callHandler(handlers.defaultActionFail, slots, attrs, app, done);
+                    callHandler(handlers.defaultActionFail, slots, attrs, app, data, done);
                 }
             }
 
         } else {
-            callHandler(handlers.defaultActionFail, slots, attrs, app, done);
+            callHandler(handlers.defaultActionFail, slots, attrs, app, data, done);
         }
     }
 };

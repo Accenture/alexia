@@ -100,11 +100,11 @@ module.exports = (name, options) => {
 
     /**
      * Handles request and calls done when finished
-     * @param {Object} request - Request JSON to be handled.
+     * @param {Object} data - Request JSON to be handled.
      * @param {Function} done - Callback to be called when request is handled. Callback is called with one argument - response JSON
      */
-    app.handle = (request, done) => {
-        handleRequest(app, request, handlers, done);
+    app.handle = (data, done) => {
+        handleRequest(app, data, handlers, done);
     };
 
     /**
