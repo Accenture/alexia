@@ -4,20 +4,20 @@ const alexia = require('../');
 
 describe('registerIntents', () => {
 
-    let app;
+  let app;
 
-    beforeEach(() => {
-        app = alexia.createApp();
-    });
+  beforeEach(() => {
+    app = alexia.createApp();
+  });
 
-    it('should register all intents maching pattern', () => {
-        app.registerIntents('test/test-apps/separate-intents/*-intent.js');
-        expect(Object.keys(app.intents)).to.have.length(2);
-    });
+  it('should register all intents maching pattern', () => {
+    app.registerIntents('test/test-apps/separate-intents/*-intent.js');
+    expect(Object.keys(app.intents)).to.have.length(2);
+  });
 
-    it('should register no intents if pattern is wrong', () => {
-        app.registerIntents('not-found/*-intent.js');
-        expect(Object.keys(app.intents)).to.have.length(0);
-    });
+  it('should register no intents if pattern is wrong', () => {
+    app.registerIntents('not-found/*-intent.js');
+    expect(Object.keys(app.intents)).to.have.length(0);
+  });
 
 });

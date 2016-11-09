@@ -12,75 +12,75 @@ const parseError = require('./error-handler').parseError;
  * @param {Function} done - Callback to be called when request is handled. Callback is called with one argument - response JSON
  */
 module.exports = (app, data, handlers, done) => {
-    const appId = data.session.application.applicationId;
-    const options = app.options;
+  const appId = data.session.application.applicationId;
+  const options = app.options;
 
-    // Application ids is specified and does not contain app id in request
-    if(options && options.ids && options.ids.length > 0 && options.ids.indexOf(appId) === -1) {
-        const e = parseError(new Error(`Application id: '${appId}' is not valid`));
+  // Application ids is specified and does not contain app id in request
+  if (options && options.ids && options.ids.length > 0 && options.ids.indexOf(appId) === -1) {
+    const e = parseError(new Error(`Application id: '${appId}' is not valid`));
+    throw e;
+  }
+
+  if (data.session.new) {
+    data.session.attributes = {
+      previousIntent: '@start'
+    };
+  } else if (!data.session.attributes) {
+    data.session.attributes = {};
+  }
+
+  const requestType = data.request.type;
+
+  info(`Handling request: "${requestType}"`);
+  debug(`Request payload: ${JSON.stringify(data, null, 2)}`);
+  switch (requestType) {
+
+    case 'LaunchRequest':
+      callHandler(handlers.onStart, null, data.session.attributes, app, data, done);
+      break;
+
+    case 'IntentRequest':
+      const intentName = data.request.intent.name;
+      const intent = app.intents[data.request.intent.name];
+
+      info(`Handling intent: "${intentName}"`);
+      if (!intent) {
+        const e = parseError(new Error(`Nonexistent intent: '${intentName}'`));
         throw e;
-    }
+      }
 
-    if(data.session.new) {
-        data.session.attributes = {
-            previousIntent: '@start'
-        };
-    } else if(!data.session.attributes) {
-        data.session.attributes = {};
-    }
+      checkActionsAndHandle(intent, data.request.intent.slots, data.session.attributes, app, handlers, data, done);
+      break;
 
-    const requestType = data.request.type;
+    case 'SessionEndedRequest':
+      callHandler(handlers.onEnd, null, data.session.attributes, app, data, done);
+      break;
 
-    info(`Handling request: "${requestType}"`);
-    debug(`Request payload: ${JSON.stringify(data, null, 2)}`);
-    switch (requestType) {
-
-        case 'LaunchRequest':
-            callHandler(handlers.onStart, null, data.session.attributes, app, data, done);
-            break;
-
-        case 'IntentRequest':
-            const intentName = data.request.intent.name;
-            const intent = app.intents[data.request.intent.name];
-
-            info(`Handling intent: "${intentName}"`);
-            if(!intent) {
-                const e = parseError(new Error(`Nonexistent intent: '${intentName}'`));
-                throw e;
-            }
-
-            checkActionsAndHandle(intent, data.request.intent.slots, data.session.attributes, app, handlers, data, done);
-            break;
-
-        case 'SessionEndedRequest':
-            callHandler(handlers.onEnd, null, data.session.attributes, app, data, done);
-            break;
-
-        default:
-            const e = parseError(new Error(`Unsupported request: '${requestType}'`));
-            throw e;
-    }
+    default:
+      const e = parseError(new Error(`Unsupported request: '${requestType}'`));
+      throw e;
+  }
 
 };
 
 const callHandler = (handler, slots, attrs, app, data, done) => {
 
-    // Transform slots into simple key:value schema
-    slots = _.transform(slots, (result, value) => {
-        result[value.name] = value.value;
-    }, {});
+  // Transform slots into simple key:value schema
+  slots = _.transform(slots, (result, value) => {
+    result[value.name] = value.value;
+  }, {});
 
-    const optionsReady = (options) => {
-        done(createResponse(options, slots, attrs, app));
-    };
+  const optionsReady = (options) => {
+    done(createResponse(options, slots, attrs, app));
+  };
 
-    // Handle intent synchronously if has < 3 arguments. 3rd is `done`
-    if(handler.length < 3) {
-        optionsReady(handler(slots, attrs, data));
+  // Handle intent synchronously if has < 3 arguments. 3rd is `done`
+  if (handler.length < 3) {
+    optionsReady(handler(slots, attrs, data));
 
-    } else {
-        handler(slots, attrs, data, optionsReady);
-    }
+  } else {
+    handler(slots, attrs, data, optionsReady);
+  }
 };
 
 /**
@@ -101,45 +101,45 @@ const callHandler = (handler, slots, attrs, app, data, done) => {
  */
 const checkActionsAndHandle = (intent, slots, attrs, app, handlers, data, done) => {
 
-    if (app.actions.length === 0) {
-        // There are no actions. Just call handler on this intent
+  if (app.actions.length === 0) {
+    // There are no actions. Just call handler on this intent
+    attrs.previousIntent = intent.name;
+    callHandler(intent.handler, slots, attrs, app, data, done);
+
+  } else {
+    // If there are some actions, try to validate current transition
+    let action = _.find(app.actions, {from: attrs.previousIntent, to: intent.name});
+
+    // Try to find action with wildcards if no action was found
+    if (!action) {
+      action = _.find(app.actions, {from: attrs.previousIntent, to: '*'});
+    }
+    if (!action) {
+      action = _.find(app.actions, {from: '*', to: intent.name});
+    }
+
+    if (action) {
+
+      // Action was found. Check if this transition is valid
+      if (action.if ? action.if(slots, attrs) : true) {
+
+        // Transition is valid. Remember intentName and handle intent
         attrs.previousIntent = intent.name;
         callHandler(intent.handler, slots, attrs, app, data, done);
 
-    } else {
-        // If there are some actions, try to validate current transition
-        let action = _.find(app.actions, {from: attrs.previousIntent, to: intent.name});
-
-        // Try to find action with wildcards if no action was found
-        if(!action) {
-            action = _.find(app.actions, {from: attrs.previousIntent, to: '*'});
-        }
-        if(!action) {
-            action = _.find(app.actions, {from: '*', to: intent.name});
-        }
-
-        if (action) {
-
-            // Action was found. Check if this transition is valid
-            if (action.if ? action.if(slots, attrs) : true) {
-
-                // Transition is valid. Remember intentName and handle intent
-                attrs.previousIntent = intent.name;
-                callHandler(intent.handler, slots, attrs, app, data, done);
-
-            } else {
-                // Transition is invalid. Call fail function
-                if(action.fail) {
-                    callHandler(action.fail, slots, attrs, app, data, done);
-                } else {
-                    callHandler(handlers.defaultActionFail, slots, attrs, app, data, done);
-                }
-            }
-
+      } else {
+        // Transition is invalid. Call fail function
+        if (action.fail) {
+          callHandler(action.fail, slots, attrs, app, data, done);
         } else {
-            callHandler(handlers.defaultActionFail, slots, attrs, app, data, done);
+          callHandler(handlers.defaultActionFail, slots, attrs, app, data, done);
         }
+      }
+
+    } else {
+      callHandler(handlers.defaultActionFail, slots, attrs, app, data, done);
     }
+  }
 };
 
 /**
@@ -148,13 +148,13 @@ const checkActionsAndHandle = (intent, slots, attrs, app, handlers, data, done) 
  * @returns {Object} card - Card object or undefined if card is not specified
  */
 const createCardObject = (card) => {
-    if (card) {
-        // Set default card type to 'Simple'
-        if(!card.type) {
-            card.type = 'Simple';
-        }
-        return card;
+  if (card) {
+    // Set default card type to 'Simple'
+    if (!card.type) {
+      card.type = 'Simple';
     }
+    return card;
+  }
 };
 
 /**
@@ -164,56 +164,56 @@ const createCardObject = (card) => {
  * @returns bool from options.end or by default true
  */
 const getShouldEndSession = (options) => {
-  if(!options || options.end === undefined) {
+  if (!options || options.end === undefined) {
     return true;
   }
   return options.end;
 };
 
 const createResponse = (options, slots, attrs, app) => {
-    // Convert text options to object
-    if(typeof(options) === 'string') {
-        options = {
-            text: options
-        };
+  // Convert text options to object
+  if (typeof (options) === 'string') {
+    options = {
+      text: options
+    };
+  }
+
+  // Create outputSpeech object for text or ssml
+  const outputSpeech = createOutputSpeechObject(options.text, options.ssml);
+
+  let sessionAttributes;
+  if (options.attrs) {
+    // Use session attributes from responseObject and remember previousIntent
+    sessionAttributes = options.attrs;
+    sessionAttributes.previousIntent = attrs.previousIntent;
+
+  } else {
+    // No session attributes specified in user response
+    sessionAttributes = attrs;
+  }
+
+  let responseObject = {
+    version: app.options ? app.options.version : '0.0.1',
+    sessionAttributes: sessionAttributes,
+    response: {
+      outputSpeech: outputSpeech,
+      shouldEndSession: getShouldEndSession(options)
     }
+  };
 
-    // Create outputSpeech object for text or ssml
-    const outputSpeech = createOutputSpeechObject(options.text, options.ssml);
-
-    let sessionAttributes;
-    if(options.attrs) {
-        // Use session attributes from responseObject and remember previousIntent
-        sessionAttributes = options.attrs;
-        sessionAttributes.previousIntent = attrs.previousIntent;
-
-    } else {
-        // No session attributes specified in user response
-        sessionAttributes = attrs;
-    }
-
-    let responseObject = {
-        version: app.options ? app.options.version : '0.0.1',
-        sessionAttributes: sessionAttributes,
-        response: {
-            outputSpeech: outputSpeech,
-            shouldEndSession: getShouldEndSession(options)
-        }
+  if (options.reprompt) {
+    responseObject.response.reprompt = {
+      outputSpeech: createOutputSpeechObject(options.reprompt, options.ssml)
     };
 
-    if(options.reprompt) {
-        responseObject.response.reprompt = {
-            outputSpeech: createOutputSpeechObject(options.reprompt, options.ssml)
-        };
+  }
 
-    }
+  let card = createCardObject(options.card);
+  if (card) {
+    responseObject.response.card = card;
+  }
 
-    let card = createCardObject(options.card);
-    if(card) {
-        responseObject.response.card = card;
-    }
-
-    return responseObject;
+  return responseObject;
 };
 
 /**
@@ -223,13 +223,13 @@ const createResponse = (options, slots, attrs, app) => {
  * @returns {Object} outputSpeechObject in one of text or ssml formats
  */
 const createOutputSpeechObject = (text, ssml) => {
-    let outputSpeech = {};
-    if(!ssml) {
-        outputSpeech.type = 'PlainText';
-        outputSpeech.text = text;
-    } else {
-        outputSpeech.type = 'SSML';
-        outputSpeech.ssml = text;
-    }
-    return outputSpeech;
+  let outputSpeech = {};
+  if (!ssml) {
+    outputSpeech.type = 'PlainText';
+    outputSpeech.text = text;
+  } else {
+    outputSpeech.type = 'SSML';
+    outputSpeech.ssml = text;
+  }
+  return outputSpeech;
 };

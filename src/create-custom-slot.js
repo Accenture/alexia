@@ -13,30 +13,30 @@ const parseError = require('./error-handler').parseError;
  */
 module.exports = (customSlots, name, samples) => {
 
-    if(customSlots[name]) {
-        const e = parseError(new Error(`Slot with name ${name} is already defined`));
-        throw e;
+  if (customSlots[name]) {
+    const e = parseError(new Error(`Slot with name ${name} is already defined`));
+    throw e;
+  }
+
+  if (builtInSlotsMap[name] || builtInSlotsValues.indexOf(name) !== -1) {
+    const e = parseError(new Error(`Slot with name ${name} is already defined in built-in slots`));
+    throw e;
+  }
+
+  if (!validator.isCustomSlotNameValid(name)) {
+    const e = parseError(new Error(`Custom slot name ${name} is invalid. Only lowercase, uppercase letters and underscores are allowed`));
+    throw e;
+  }
+
+  samples.forEach(sample => {
+    if (validator.isCustomSlotValueValid(sample)) {
+      const e = parseError(new Error(`Custom slot with name ${name} contains invalid special character(~, ^, *, (, ), [, ], §, !, ?, ;, :, " and |): ${sample}`));
+      throw e;
     }
+  });
 
-    if(builtInSlotsMap[name] || builtInSlotsValues.indexOf(name) !== -1) {
-        const e = parseError(new Error(`Slot with name ${name} is already defined in built-in slots`));
-        throw e;
-    }
-
-    if(!validator.isCustomSlotNameValid(name)) {
-        const e = parseError(new Error(`Custom slot name ${name} is invalid. Only lowercase, uppercase letters and underscores are allowed`));
-        throw e;
-    }
-
-    samples.forEach(sample => {
-        if(validator.isCustomSlotValueValid(sample)) {
-            const e = parseError(new Error(`Custom slot with name ${name} contains invalid special character(~, ^, *, (, ), [, ], §, !, ?, ;, :, " and |): ${sample}`));
-            throw e;
-        }
-    });
-
-    return {
-        name,
-        samples
-    };
+  return {
+    name,
+    samples
+  };
 };
