@@ -42,4 +42,4 @@ exports.utterances = [
   'AnotherCardIntentSample card intent'
 ];
 
-exports.customSlot = ['Borimir', 'Vlasto'];
+exports.nameCustomSlot = ['Borimir', 'Vlasto'];

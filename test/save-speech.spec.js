@@ -7,21 +7,14 @@ const assetsMock = require('./mock/assets');
 
 describe('saveSpeechAssets', () => {
 
-  function saveAssets (done, actualDirectory, paramDirectory) {
-    fs.stat(actualDirectory, (_err, stat) => {
-      if (stat) {
-        rimraf.sync(actualDirectory);
-      }
-
-      app.saveSpeechAssets(paramDirectory);
-      done();
-    });
-  }
-
   describe('defaultDirectory', () => {
 
-    before(done => {
-      saveAssets(done, 'speechAssets', undefined);
+    before(() => {
+      rimraf.sync('speechAssets');
+      fs.mkdirSync('speechAssets');
+      fs.mkdirSync('speechAssets/customSlots');
+      fs.writeFileSync('speechAssets/customSlots/testCustomSlot.txt', 'test');
+      app.saveSpeechAssets();
     });
 
     it('should save intentSchema to JSON file', () => {
@@ -36,7 +29,15 @@ describe('saveSpeechAssets', () => {
 
     it('should save customSlots to separate files', () => {
       const customSlot = fs.readFileSync('speechAssets/customSlots/Name.txt', 'utf8');
-      expect(customSlot.split('\n')).to.deep.equal(assetsMock.customSlot);
+      expect(customSlot.split('\n')).to.deep.equal(assetsMock.nameCustomSlot);
+    });
+
+    it('should not contain previously created file testCustomSlot', () => {
+      expect(fs.existsSync('speechAssets/customSlots/testCustomSlot.txt')).to.equal(false);
+    });
+
+    after(() => {
+      rimraf.sync('speechAssets');
     });
   });
 
@@ -44,8 +45,9 @@ describe('saveSpeechAssets', () => {
 
     const mySpeechAssetsDirectory = 'mySpeechAssetsDirectory';
 
-    before(done => {
-      saveAssets(done, mySpeechAssetsDirectory, mySpeechAssetsDirectory);
+    before(() => {
+      rimraf.sync(mySpeechAssetsDirectory);
+      app.saveSpeechAssets(mySpeechAssetsDirectory);
     });
 
     it('should save speechAssets to customDirectory ', () => {
@@ -57,5 +59,4 @@ describe('saveSpeechAssets', () => {
       rimraf.sync(mySpeechAssetsDirectory);
     });
   });
-
 });

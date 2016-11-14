@@ -16,7 +16,7 @@ describe('generateSpeechAssets', () => {
 
   it('should generate customSlots', () => {
     expect(assets.customSlots).to.deep.equal({
-      Name: assetsMock.customSlot
+      Name: assetsMock.nameCustomSlot
     });
   });
 
@@ -26,5 +26,4 @@ describe('generateSpeechAssets', () => {
     expect(typeof stringifiedAssets).to.equal('string');
     expect(stringifiedAssets.split('\n\n').length).to.equal(4);
   });
-
 });
