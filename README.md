@@ -41,6 +41,10 @@ Optional: requires [Handling Amazon Requests manually](#handling-amazon-requests
 
 `npm install hapi --save`
 
+Testing: We use Mocah, Chai, with Expect.js
+
+`npm install mocha chai expect.js --save-dev`
+
 ## Overview
 
 Alexia helps you to write Amazon Echo skills using Node.js. This framework handles Amazon Echo requests and automatically calls intents in your application. See the [Features and Samples](#features-and-samples)
@@ -469,6 +473,8 @@ exports.handler = (event, context, callback) => {
 Each application should be unit-tested. We are exposing simple API helping you to create sample Alexa requests for testing and debugging
 
 ```javascript
+const expect = require('chai').expect;
+const alexia = require('alexia');
 const app = require('./path-to-your-app');
 
 // Create sample requests
@@ -477,10 +483,13 @@ const sessionEndedRequest = alexia.createSessionEndedRequest();
 const intentRequest = alexia.createIntentRequest('MyIntent');
 
 // Simulate request handling
-app.handle(launchRequest, (response) => {
+describe('built in intents', () => {
+  it('should handle LanuchRequest', () => {
+    app.handle(launchRequest, (response) => {
 
-  // Test the response
-  expect(response).to.be.defined;
+    // Test the response
+    expect(response).to.be.defined;
+  });
 });
 ```
 
