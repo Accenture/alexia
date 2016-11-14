@@ -3,7 +3,7 @@ const alexia = require('..');
 const app = alexia.createApp('MoreUtterancesExample');
 
 app.intent('MoreUtterancesIntent', ['hello sir', 'good evening sir', 'whats up'], () => {
-    return 'Hello yourself';
+  return 'Hello yourself';
 });
 
 module.exports = app;

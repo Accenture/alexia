@@ -2,15 +2,15 @@
 const _ = require('lodash');
 
 module.exports = (app) => {
-    let assets = {
-        intentSchema: genIntentSchema(app.intents),
-        utterances: genUtterances(app.intents),
-        customSlots: genCustomSlots(app.customSlots)
-    };
+  let assets = {
+    intentSchema: genIntentSchema(app.intents),
+    utterances: genUtterances(app.intents),
+    customSlots: genCustomSlots(app.customSlots)
+  };
 
-    assets.toString = createStringifyAssets(assets);
+  assets.toString = createStringifyAssets(assets);
 
-    return assets;
+  return assets;
 };
 
 /**
@@ -21,11 +21,11 @@ module.exports = (app) => {
  * @returns {function} returning stringified version of speech assetsuseful for printing in terminal
  */
 const createStringifyAssets = (assets) => () => {
-    let customSlotsString = _.map(assets.customSlots, (samples, name) => {
-        return `${name}:\n${samples.join('\n')}\n`;
-    }).join('\n');
+  let customSlotsString = _.map(assets.customSlots, (samples, name) => {
+    return `${name}:\n${samples.join('\n')}\n`;
+  }).join('\n');
 
-    return createAsset('intentSchema', assets.intentSchema) +
+  return createAsset('intentSchema', assets.intentSchema) +
         createAsset('utterances', assets.utterances) +
         createAsset('customSlots', customSlotsString);
 };
@@ -37,7 +37,7 @@ const createStringifyAssets = (assets) => () => {
  * @returns {string}
  */
 const createAsset = (type, data) => {
-    return `${type}:\n${data}\n\n`;
+  return `${type}:\n${data}\n\n`;
 };
 
 /**
@@ -45,24 +45,24 @@ const createAsset = (type, data) => {
  * @return {string} strigified intent schema object generated from intents
  */
 const genIntentSchema = (intents) => {
-    let intentSchema = {
-        intents: []
+  let intentSchema = {
+    intents: []
+  };
+
+  _.forOwn(intents, intent => {
+    let currentSchema = {
+      intent: intent.name
     };
 
-    _.forOwn(intents, intent => {
-        let currentSchema = {
-            intent: intent.name
-        };
-
         // Property slots is optional
-        if(intent.slots && intent.slots.length > 0) {
-            currentSchema.slots = intent.slots;
-        }
+    if (intent.slots && intent.slots.length > 0) {
+      currentSchema.slots = intent.slots;
+    }
 
-        intentSchema.intents.push(currentSchema);
-    });
+    intentSchema.intents.push(currentSchema);
+  });
 
-    return JSON.stringify(intentSchema, null, 2);
+  return JSON.stringify(intentSchema, null, 2);
 };
 
 /**
@@ -70,17 +70,17 @@ const genIntentSchema = (intents) => {
  * @return {string} interpretation of all sample utterances
  */
 const genUtterances = (intents) => {
-    let sampleUtterances = [];
+  let sampleUtterances = [];
 
-    _.forOwn(intents, intent => {
-        intent.utterances.forEach(utterance => {
-            if(utterance) {
-                sampleUtterances.push(`${intent.name} ${utterance}`);
-            }
-        });
+  _.forOwn(intents, intent => {
+    intent.utterances.forEach(utterance => {
+      if (utterance) {
+        sampleUtterances.push(`${intent.name} ${utterance}`);
+      }
     });
+  });
 
-    return sampleUtterances.join('\n');
+  return sampleUtterances.join('\n');
 };
 
 /**
@@ -88,11 +88,11 @@ const genUtterances = (intents) => {
  * custom slot type samples
  */
 const genCustomSlots = (customSlots) => {
-    let allCustomSlotSamples = {};
+  let allCustomSlotSamples = {};
 
-    _.forOwn(customSlots, (customSlot) => {
-        allCustomSlotSamples[customSlot.name] = customSlot.samples;
-    });
+  _.forOwn(customSlots, (customSlot) => {
+    allCustomSlotSamples[customSlot.name] = customSlot.samples;
+  });
 
-    return allCustomSlotSamples;
+  return allCustomSlotSamples;
 };

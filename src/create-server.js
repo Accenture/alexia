@@ -11,26 +11,26 @@ const info = require('debug')('alexia:info');
  * @returns {object} server
  */
 module.exports = (app, options) => {
-    const Hapi = require('hapi');
-    const server = new Hapi.Server();
+  const Hapi = require('hapi');
+  const server = new Hapi.Server();
 
-    options = Object.assign({}, options);
+  options = Object.assign({}, options);
 
-    server.connection({
-        port: options.port || process.env.PORT || 8888
-    });
+  server.connection({
+    port: options.port || process.env.PORT || 8888
+  });
 
-    server.route({
-        path: options.path || '/',
-        method: 'POST',
-        handler: (request, response) => {
-            app.handle(request.payload, (data) => {
-                response(data);
-            });
-        }
-    });
+  server.route({
+    path: options.path || '/',
+    method: 'POST',
+    handler: (request, response) => {
+      app.handle(request.payload, (data) => {
+        response(data);
+      });
+    }
+  });
 
-    info(`Server created on URI: "${server.info.uri}"`);
-    debug(`Server created on URI: "${server.info.uri}"`);
-    return server;
+  info(`Server created on URI: "${server.info.uri}"`);
+  debug(`Server created on URI: "${server.info.uri}"`);
+  return server;
 };

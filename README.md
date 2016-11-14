@@ -11,7 +11,7 @@ const alexia = require('alexia');
 const app = alexia.createApp();
 
 app.intent('HelloIntent', 'Hello', () => {
-    return 'Hello from Alexia app';
+  return 'Hello from Alexia app';
 });
 ```
 
@@ -27,9 +27,9 @@ app.createServer().start();
 
 ```javascript
 exports.handler = (event, context, callback) => {
-    app.handle(event, data => {
-        callback(null, data);
-    });
+  app.handle(event, data => {
+    callback(null, data);
+  });
 };
 ```
 
@@ -127,7 +127,7 @@ If you want more than just a generic "Welcome" from Alexa, you can use the onSta
 
 ```javascript
 app.onStart(() => {
-    return 'Welcome to My Hello World App, say hello world to get started, or say help to get more instructions';
+  return 'Welcome to My Hello World App, say hello world to get started, or say help to get more instructions';
 });
 ```
 
@@ -154,7 +154,7 @@ As mentioned in [Terminology](#terminology) section - slots represent variable p
 
 ```javascript
 app.intent('SlotIntent', 'My number is {num:Number}', (slots) => {
-    return `Your number is ${slots.num}`;
+  return `Your number is ${slots.num}`;
 });
 ```
 
@@ -166,7 +166,7 @@ Alexia helps you to create custom slots by specifying its `name` and `utterances
 app.customSlot('Name', ['Arnold', 'Otto', 'Walda', 'Pete']);
 
 app.intent('CustomSlotIntent', 'My name is {name:Name}', (slots) => {
-    return `Hi ${slots.name}`;
+  return `Hi ${slots.name}`;
 });
 ```
 
@@ -176,13 +176,13 @@ Intent can be resolved using simple string (a text response) or more complex `re
 
 ```javascript
 app.intent('AttrsIntent', 'session attributes test', (slots, attrs) => {
-    return {
-        text: 'Alexa response text here',
-        attrs: {
-            attr1: 'Whatever to be remebered in this session'
-        },
-        end: false
-    };
+  return {
+    text: 'Alexa response text here',
+    attrs: {
+      attr1: 'Whatever to be remebered in this session'
+    },
+    end: false
+  };
 });
 ```
 
@@ -192,13 +192,13 @@ To display card in Alexa app add configuration to responseObject `card` property
 
 ```javascript
 app.intent('CardsIntent', 'Whats in shopping cart', () => {
-    return {
-        text: 'Your shopping cart contains Amazon Echo Device and 2 more items. To see the full list check out your Alexa app',
-        card: {
-            title: 'Shopping cart',
-            content: 'You shopping cart contains: Amazon Echo, Amazon Tap, Echo Dot'
-        }
-    };
+  return {
+    text: 'Your shopping cart contains Amazon Echo Device and 2 more items. To see the full list check out your Alexa app',
+    card: {
+      title: 'Shopping cart',
+      content: 'You shopping cart contains: Amazon Echo, Amazon Tap, Echo Dot'
+    }
+  };
 });
 ```
 
@@ -208,10 +208,10 @@ To add reprompt text to your response add `reprompt` string value to responseObj
 
 ```javascript
 app.intent('RepromptIntent', 'Send email to Mom', () => {
-    return {
-        text: 'What is the text of your message',
-        reprompt: 'Sorry I did not catch it. What is the text of your message'
-    };
+  return {
+    text: 'What is the text of your message',
+    reprompt: 'Sorry I did not catch it. What is the text of your message'
+  };
 });
 ```
 
@@ -221,7 +221,7 @@ Use SSML to create more complex text responses. Just set the `ssml` parameter of
 
 ```javascript
 app.intent('SSMLIntent', 'what are the digits of number {num:Number}', (slots) => {
-    return `<say-as interpret-as="digits">${number}</say-as>`
+  return `<say-as interpret-as="digits">${number}</say-as>`
 });
 ```
 
@@ -231,8 +231,8 @@ You can access the original Amazon request data from third parameter of handler.
 
 ```javascript
 app.intent('OriginalRequestData', 'read original request data', (slots, attrs, data) => {
-    console.log('userId', data.session.user.userId);
-    return 'Hi';
+  console.log('userId', data.session.user.userId);
+  return 'Hi';
 });
 ```
 
@@ -242,9 +242,9 @@ For asynchronous intent handling add fourth parameter to your handler callback a
 
 ```javascript
 app.intent('AsyncIntent', 'Search for something in database', (slots, attrs, data, done) => {
-    setTimeout(() => {
-        done('Work complete');
-    }, 120);
+  setTimeout(() => {
+    done('Work complete');
+  }, 120);
 });
 ```
 
@@ -292,7 +292,7 @@ If your intents are located in separate files you need to register them to the a
 
 ```javascript
 module.exports = app => app.intent('HelloIntent', 'hello', () => {
-    return 'Hello';
+  return 'Hello';
 });
 ```
 
@@ -317,22 +317,22 @@ Each action could have condition to check whether the transition should be handl
 ```javascript
 // Allow transition from any intent to `intent1`.
 app.action({
-    from: '*',
-    to: 'intent1'
+  from: '*',
+  to: 'intent1'
 });
 
 // Allow transition from start intent to `intent2`.
 app.action({
-    from: '@start',
-    to: 'intent2'
+  from: '@start',
+  to: 'intent2'
 });
 
 // Allow transition from `intent1` to `intent2` if condition is met using custom fail handler
 app.action({
-    from: 'intent1',
-    to: 'intent2',
-    if: (slots, attrs) => slots.pin === 1234,
-    fail: (slots, attrs) => 'Sorry, your pin is invalid'
+  from: 'intent1',
+  to: 'intent2',
+  if: (slots, attrs) => slots.pin === 1234,
+  fail: (slots, attrs) => 'Sorry, your pin is invalid'
 });
 
 // Set default fail handler
@@ -350,8 +350,8 @@ npm install hapi --save
 
 ```javascript
 const options = {
-    path: '/', // defaults to: '/'
-    port: 8888 // defaults to: process.env.PORT or 8888
+  path: '/', // defaults to: '/'
+  port: 8888 // defaults to: process.env.PORT or 8888
 };
 const server = app.createServer(options);
 ```
@@ -366,23 +366,23 @@ const server = new Hapi.Server();
 const app = require('./app'); // Your app
 
 server.connection({
-    port: process.env.PORT || 8888
+  port: process.env.PORT || 8888
 });
 
 server.route({
-    path: '/',
-    method: 'POST',
-    handler: (request, response) => {
-        app.handle(request.payload, (data) => {
-            response(data);
-        });
-    }
+  path: '/',
+  method: 'POST',
+  handler: (request, response) => {
+    app.handle(request.payload, (data) => {
+      response(data);
+    });
+  }
 });
 
 server.start((err) => {
-    if (err) throw err;
-    console.log('Server running at:', server.info.uri);
-    app.saveSpeechAssets();
+  if (err) throw err;
+  console.log('Server running at:', server.info.uri);
+  app.saveSpeechAssets();
 });
 ```
 
@@ -411,9 +411,9 @@ server.start((err) => {
 
 ```javascript
 exports.handler = (event, context, callback) => {
-    app.handle(event, data => {
-        callback(null, data);
-    });
+  app.handle(event, data => {
+    callback(null, data);
+  });
 };
 ```
 
@@ -479,8 +479,8 @@ const intentRequest = alexia.createIntentRequest('MyIntent');
 // Simulate request handling
 app.handle(launchRequest, (response) => {
 
-    // Test the response
-    expect(response).to.be.defined;
+  // Test the response
+  expect(response).to.be.defined;
 });
 ```
 

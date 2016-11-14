@@ -1,45 +1,45 @@
 'use strict';
 
 exports.intentSchema = {
-    intents: [
-        {intent: 'FirstIntent'},
-        {intent: 'NamedIntent'},
-        {intent: 'a'},
-        {intent: 'b'},
-        {
-            intent: 'c',
-            slots: [{name: 'age', type: 'AMAZON.NUMBER'}]
-        },
-        {
-            intent: 'd',
-            slots: [{name: 'name', type: 'Name'}]
-        },
-        {intent: 'AMAZON.StopIntent'},
-        {intent: 'AMAZON.HelpIntent'},
-        {intent: 'AMAZON.CancelIntent'},
-        {intent: 'IntentA'},
-        {intent: 'IntentB'},
-        {intent: 'e'},
-        {intent: 'AnotherCardIntentSample'}
-    ]
+  intents: [
+    {intent: 'FirstIntent'},
+    {intent: 'NamedIntent'},
+    {intent: 'a'},
+    {intent: 'b'},
+    {
+      intent: 'c',
+      slots: [{name: 'age', type: 'AMAZON.NUMBER'}]
+    },
+    {
+      intent: 'd',
+      slots: [{name: 'name', type: 'Name'}]
+    },
+    {intent: 'AMAZON.StopIntent'},
+    {intent: 'AMAZON.HelpIntent'},
+    {intent: 'AMAZON.CancelIntent'},
+    {intent: 'IntentA'},
+    {intent: 'IntentB'},
+    {intent: 'e'},
+    {intent: 'AnotherCardIntentSample'}
+  ]
 };
 
 exports.utterances = [
-    'FirstIntent utterance',
-    'NamedIntent utteranceB',
-    'NamedIntent utteranceC',
-    'a utterance for intent without name',
-    'b multiple',
-    'b utterances',
-    'c I am {age} years old',
-    'd My name is {name}',
-    'AMAZON.StopIntent one utterance',
-    'AMAZON.HelpIntent two utterances',
-    'AMAZON.HelpIntent yup',
-    'IntentA another utterance',
-    'IntentB another utterance',
-    'e async response',
-    'AnotherCardIntentSample card intent'
+  'FirstIntent utterance',
+  'NamedIntent utteranceB',
+  'NamedIntent utteranceC',
+  'a utterance for intent without name',
+  'b multiple',
+  'b utterances',
+  'c I am {age} years old',
+  'd My name is {name}',
+  'AMAZON.StopIntent one utterance',
+  'AMAZON.HelpIntent two utterances',
+  'AMAZON.HelpIntent yup',
+  'IntentA another utterance',
+  'IntentB another utterance',
+  'e async response',
+  'AnotherCardIntentSample card intent'
 ];
 
 exports.customSlot = ['Borimir', 'Vlasto'];
