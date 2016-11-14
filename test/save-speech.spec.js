@@ -7,18 +7,14 @@ const assetsMock = require('./mock/assets');
 
 describe('saveSpeechAssets', () => {
 
-  function saveAssets (done, actualDirectory, paramDirectory) {
-    app.saveSpeechAssets(paramDirectory);
-    done();
-  }
-
   describe('defaultDirectory', () => {
 
-    before(done => {
-      fs.mkdir('speechAssets');
-      fs.mkdir('speechAssets/customSlots');
-      fs.writeFile('speechAssets/customSlots/testCustomSlot.txt', 'test');
-      saveAssets(done, 'speechAssets', undefined);
+    before(() => {
+      rimraf.sync('speechAssets');
+      fs.mkdirSync('speechAssets');
+      fs.mkdirSync('speechAssets/customSlots');
+      fs.writeFileSync('speechAssets/customSlots/testCustomSlot.txt', 'test');
+      app.saveSpeechAssets();
     });
 
     it('should save intentSchema to JSON file', () => {
@@ -49,8 +45,9 @@ describe('saveSpeechAssets', () => {
 
     const mySpeechAssetsDirectory = 'mySpeechAssetsDirectory';
 
-    before(done => {
-      saveAssets(done, mySpeechAssetsDirectory, mySpeechAssetsDirectory);
+    before(() => {
+      rimraf.sync(mySpeechAssetsDirectory);
+      app.saveSpeechAssets(mySpeechAssetsDirectory);
     });
 
     it('should save speechAssets to customDirectory ', () => {
