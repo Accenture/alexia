@@ -7,6 +7,7 @@ module.exports = (assets, directory) => {
     saveToFile(assets.utterances, 'txt', 'utterances', directory);
 
     const customSlotsDir = path.join(directory, 'customSlots');
+    deleteFilesInDir(customSlotsDir);
     Object.keys(assets.customSlots).forEach((key) => {
         const newLineFormat = assets.customSlots[key].join('\n');
         saveToFile(newLineFormat, 'txt', `${key}`, customSlotsDir);
@@ -35,5 +36,18 @@ const checkDirectory = (directory) => {
         fs.statSync(directory);
     } catch(e) {
         fs.mkdirSync(directory);
+    }
+};
+
+/**
+ * Deletes all files in directory
+ * @param {string} directory
+ */
+const deleteFilesInDir = (directory) => {
+    if (fs.existsSync(directory)){
+        fs.readdirSync(directory).forEach((file) => {
+            const customSlotFile = path.join(directory, file);
+            fs.unlinkSync(customSlotFile);
+        });
     }
 };
