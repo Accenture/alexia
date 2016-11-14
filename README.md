@@ -17,7 +17,7 @@ app.intent('HelloIntent', 'Hello', () => {
 
 **HTTPS Server**
 
-```
+```javascript
 app.createServer().start();
 ```
 
@@ -466,21 +466,36 @@ exports.handler = (event, context, callback) => {
 
 ### Unit Testing
 
-Each application should be unit-tested. We are exposing simple API helping you to create sample Alexa requests for testing and debugging
+Each application should be unit-tested. We are exposing simple API helping you to create sample Alexa requests for testing and debugging.
+
+```bash
+npm install mocha chai expect --save-dev
+```
+
+Example below illustrates simple unit testing for intentRequest. Testing of launchRequest or sessionEndedRequest would look the same
 
 ```javascript
-const app = require('./path-to-your-app');
+const expect = require('chai').expect;
+const alexia = require('alexia');
+const app = require('./path-to-app.js');
 
 // Create sample requests
 const launchRequest = alexia.createLaunchRequest();
 const sessionEndedRequest = alexia.createSessionEndedRequest();
 const intentRequest = alexia.createIntentRequest('MyIntent');
 
-// Simulate request handling
-app.handle(launchRequest, (response) => {
+// Sample MyIntent test suite
+describe('(Intent) MyIntent', () => {
+  it('should handle MyIntent', done => {
 
-  // Test the response
-  expect(response).to.be.defined;
+    // Simulate Alexa request handling
+    app.handle(intentRequest, response => {
+      
+      // Test the response
+      expect(response).to.be.defined;
+      done();
+    });
+  });
 });
 ```
 
