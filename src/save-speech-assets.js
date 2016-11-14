@@ -3,15 +3,15 @@ const fs = require('fs');
 const path = require('path');
 
 module.exports = (assets, directory) => {
-    saveToFile(assets.intentSchema, 'json', 'intentSchema', directory);
-    saveToFile(assets.utterances, 'txt', 'utterances', directory);
+  saveToFile(assets.intentSchema, 'json', 'intentSchema', directory);
+  saveToFile(assets.utterances, 'txt', 'utterances', directory);
 
-    const customSlotsDir = path.join(directory, 'customSlots');
-    deleteFilesInDir(customSlotsDir);
-    Object.keys(assets.customSlots).forEach((key) => {
-        const newLineFormat = assets.customSlots[key].join('\n');
-        saveToFile(newLineFormat, 'txt', `${key}`, customSlotsDir);
-    });
+  const customSlotsDir = path.join(directory, 'customSlots');
+  deleteFilesInDir(customSlotsDir);
+  Object.keys(assets.customSlots).forEach((key) => {
+    const newLineFormat = assets.customSlots[key].join('\n');
+    saveToFile(newLineFormat, 'txt', `${key}`, customSlotsDir);
+  });
 };
 
 /**
@@ -22,9 +22,9 @@ module.exports = (assets, directory) => {
  * @param {string} directory
  */
 const saveToFile = (data, type, filename, directory) => {
-    const pathname = path.join(directory, `${filename}.${type}`);
-    checkDirectory(directory);
-    fs.writeFileSync(pathname, data);
+  const pathname = path.join(directory, `${filename}.${type}`);
+  checkDirectory(directory);
+  fs.writeFileSync(pathname, data);
 };
 
 /**
@@ -32,11 +32,11 @@ const saveToFile = (data, type, filename, directory) => {
  * @param {string} directory
  */
 const checkDirectory = (directory) => {
-    try {
-        fs.statSync(directory);
-    } catch(e) {
-        fs.mkdirSync(directory);
-    }
+  try {
+    fs.statSync(directory);
+  } catch (e) {
+    fs.mkdirSync(directory);
+  }
 };
 
 /**
@@ -44,10 +44,10 @@ const checkDirectory = (directory) => {
  * @param {string} directory
  */
 const deleteFilesInDir = (directory) => {
-    if (fs.existsSync(directory)){
-        fs.readdirSync(directory).forEach((file) => {
-            const customSlotFile = path.join(directory, file);
-            fs.unlinkSync(customSlotFile);
-        });
-    }
+  if (fs.existsSync(directory)) {
+    fs.readdirSync(directory).forEach((file) => {
+      const customSlotFile = path.join(directory, file);
+      fs.unlinkSync(customSlotFile);
+    });
+  }
 };
