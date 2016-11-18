@@ -110,6 +110,16 @@ describe('basic app handler', () => {
     });
   });
 
+  it('should handle intent with three arguments', (done) => {
+    const app2 = alexia.createApp('App2');
+    app2.intent('FullRequestDataIntent', 'hi', (slots, attrs, data) => 'hello');
+    const request = createRequest.intentRequest('FullRequestDataIntent');
+    app2.handle(request, (response) => {
+      expect(response.response.outputSpeech.text).to.equal('hello');
+      done();
+    });
+  });
+
   it('should create intent with utterances using space, dot, hyphen & apostrophe', () => {
     const app2 = alexia.createApp('App2');
     app2.intent('MegaIntent', 'Not good -\' .. ', () => 'Nope');

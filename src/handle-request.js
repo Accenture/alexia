@@ -74,8 +74,8 @@ const callHandler = (handler, slots, attrs, app, data, done) => {
     done(createResponse(options, slots, attrs, app));
   };
 
-  // Handle intent synchronously if has < 3 arguments. 3rd is `done`
-  if (handler.length < 3) {
+  // Handle intent synchronously if has < 4 arguments. 4th is `done`
+  if (handler.length < 4) {
     optionsReady(handler(slots, attrs, data));
 
   } else {
