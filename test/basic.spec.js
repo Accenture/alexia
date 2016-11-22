@@ -1,18 +1,22 @@
 'use strict';
 const _ = require('lodash');
 const expect = require('chai').expect;
-const alexia = require('../');
+const alexia = require('..');
 const app = require('./test-apps/basic-app');
-const createRequest = require('../src/create-request');
 
 const intents = _.values(app.intents);
 
 describe('basic app handler', () => {
-
   let attrs;
 
+  it('should create default alexa request', () => {
+    const data = alexia.createRequest();
+    expect(data.request.type).to.equal('IntentRequest');
+    expect(data.request.intent.name).to.equal('UnknownIntent');
+  });
+
   it('should handle LaunchRequest', (done) => {
-    const request = createRequest.launchRequest(null, 'appId1');
+    const request = alexia.createLaunchRequest(null, 'appId1');
     app.handle(request, response => {
       expect(response).to.be.defined;
       done();
@@ -20,7 +24,7 @@ describe('basic app handler', () => {
   });
 
   it('should handle SessionEndedRequest', (done) => {
-    const request = createRequest.sessionEndedRequest(null, 'appId1');
+    const request = alexia.createSessionEndedRequest(null, 'appId1');
     app.handle(request, response => {
       expect(response).to.be.defined;
       done();
@@ -30,7 +34,7 @@ describe('basic app handler', () => {
   it('should handle custom LaunchRequest', (done) => {
     const app2 = alexia.createApp('TestApp1');
     app2.onStart(() => 'foo');
-    app2.handle(createRequest.launchRequest(), (response) => {
+    app2.handle(alexia.createLaunchRequest(), (response) => {
       expect(response).to.be.defined;
       expect(response.response.outputSpeech.text).to.equal('foo');
       done();
@@ -40,7 +44,7 @@ describe('basic app handler', () => {
   it('should handle custom SessionEndedRequest', (done) => {
     const app2 = alexia.createApp('TestApp2');
     app2.onEnd(() => 'bar');
-    app2.handle(createRequest.sessionEndedRequest(), (response) => {
+    app2.handle(alexia.createSessionEndedRequest(), (response) => {
       expect(response).to.be.defined;
       expect(response.response.outputSpeech.text).to.equal('bar');
       done();
@@ -48,9 +52,10 @@ describe('basic app handler', () => {
   });
 
   it('should handle FirstIntent request', (done) => {
-    const request = createRequest.intentRequest('FirstIntent', null, null, false, 'appId1');
+    // Same as alexia.createIntentRequest('FirstIntent', null, null, false, 'appId1');
+    const request = alexia.createRequest({name: 'FirstIntent', appId: 'appId1'});
 
-        // Remove empty session attributes to cover scenario when missing
+    // Remove empty session attributes to cover scenario when missing
     request.session.attributes = undefined;
 
     const expectedResponse = {
@@ -70,7 +75,7 @@ describe('basic app handler', () => {
   });
 
   it('should handle intent with slots', (done) => {
-    const request = createRequest.intentRequest(intents[5].name, {name: 'Borimir'}, null, false, 'appId1');
+    const request = alexia.createIntentRequest(intents[5].name, {name: 'Borimir'}, null, false, 'appId1');
 
     app.handle(request, (response) => {
       expect(response.response.outputSpeech.text).equal('okay sir your name is Borimir');
@@ -79,7 +84,7 @@ describe('basic app handler', () => {
   });
 
   it('should handle IntentA request', (done) => {
-    const request = createRequest.intentRequest('IntentA', null, null, false, 'appId1');
+    const request = alexia.createIntentRequest('IntentA', null, null, false, 'appId1');
 
     app.handle(request, (response) => {
       attrs = response.sessionAttributes;
@@ -91,7 +96,7 @@ describe('basic app handler', () => {
   });
 
   it('should handle IntentB request', (done) => {
-    const request = createRequest.intentRequest('IntentB', null, attrs, false, 'appId1');
+    const request = alexia.createIntentRequest('IntentB', null, attrs, false, 'appId1');
 
     app.handle(request, (response) => {
       attrs = response.sessionAttributes;
@@ -102,7 +107,7 @@ describe('basic app handler', () => {
   });
 
   it('should handle async intent', (done) => {
-    const request = createRequest.intentRequest(intents[11].name, null, null, false, 'appId1');
+    const request = alexia.createIntentRequest(intents[11].name, null, null, false, 'appId1');
 
     app.handle(request, (response) => {
       expect(response.response.outputSpeech.text).equal('I just did stuff asynchronously. Thank you for this opportunity');
@@ -113,7 +118,7 @@ describe('basic app handler', () => {
   it('should handle intent with three arguments', (done) => {
     const app2 = alexia.createApp('App2');
     app2.intent('FullRequestDataIntent', 'hi', (slots, attrs, data) => 'hello');
-    const request = createRequest.intentRequest('FullRequestDataIntent');
+    const request = alexia.createIntentRequest('FullRequestDataIntent');
     app2.handle(request, (response) => {
       expect(response.response.outputSpeech.text).to.equal('hello');
       done();
@@ -135,7 +140,7 @@ describe('basic app handler', () => {
   it('should not handle request for wrong app id', () => {
     const app2 = alexia.createApp('App2', {ids: 'supported-app-id'});
     try {
-      app2.handle(createRequest.launchRequest(null, 'wrong-app-id'));
+      app2.handle(alexia.createLaunchRequest(null, 'wrong-app-id'));
       throw new Error('App was handled with unsupported application id');
     } catch (e) {
       expect(e).to.include('Application id: \'wrong-app-id\' is not valid');
@@ -143,7 +148,7 @@ describe('basic app handler', () => {
   });
 
   it('should not handle nonexistent intent', () => {
-    const request = createRequest.intentRequest('UnsupportedIntentName', null, null, false, 'appId1');
+    const request = alexia.createIntentRequest('UnsupportedIntentName', null, null, false, 'appId1');
     try {
       app.handle(request);
     } catch (e) {
@@ -152,7 +157,7 @@ describe('basic app handler', () => {
   });
 
   it('should not handle unsupported request', () => {
-    const request = createRequest.intentRequest('IntentA', null, null, false, 'appId1');
+    const request = alexia.createIntentRequest('IntentA', null, null, false, 'appId1');
     request.request.type = 'UnsupportedRequestType';
     try {
       app.handle(request);
@@ -249,14 +254,14 @@ describe('basic app handler', () => {
   });
 
   it('should handle AnotherCardIntentSample with card type', () => {
-    const request = createRequest.intentRequest('AnotherCardIntentSample', null, null, false, 'appId1');
+    const request = alexia.createIntentRequest('AnotherCardIntentSample', null, null, false, 'appId1');
     app.handle(request, (response) => {
       expect(response.response.card.type).to.equal('Standard');
     });
   });
 
   it('should handle intent and set shouldEndSession to false', () => {
-    const request = createRequest.intentRequest('AnotherCardIntentSample', null, null, false, 'appId1');
+    const request = alexia.createIntentRequest('AnotherCardIntentSample', null, null, false, 'appId1');
     app.handle(request, (response) => {
       expect(response.response.shouldEndSession).to.equal(false);
     });
