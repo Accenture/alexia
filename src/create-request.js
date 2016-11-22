@@ -2,73 +2,72 @@
 const _ = require('lodash');
 
 /**
- * Creates simple Alexa request
+ * Creates Alexa request
+ * @param [options]
+ * @param [options.type]
+ * @param [options.name]
+ * @param [options.slots]
+ * @param [options.attrs]
+ * @param [options.appId]
+ * @param [options.sessionid]
+ * @param [options.userId]
+ * @param [options.requestId]
+ * @param [options.timestamp]
+ * @param [options.locale]
+ * @param [options.new]
  */
-const requestBuilder = (requestType, intent, isNew, attrs, appId) => {
+module.exports = options => {
 
-  const request = {
-    session: {
-      attributes: attrs || {},
-      sessionId: 'SessionId.357a6s7',
-      application: {
-        applicationId: appId || 'amzn1.echo-sdk-123456'
-      },
-      user: {
-        userId: 'amzn1.account.abc123'
-      },
-      new: isNew || false
-    },
-    request: {
-      type: requestType,
-      requestId: 'EdwRequestId.abc123456',
-      timestamp: '2016-06-16T14:38:46Z',
-      intent: intent
-    }
-  };
+  // Assign default request options
+  options = Object.assign({
+    type: 'IntentRequest',
+    name: 'UnknownIntent',
+    slots: {},
+    attrs: {},
+    appId: 'amzn1.echo-sdk-123456',
+    sessionId: 'SessionId.357a6s7',
+    userId: 'amzn1.account.abc123',
+    requestId: 'EdwRequestId.abc123456',
+    timestamp: '2016-06-16T14:38:46Z',
+    locale: 'en-US',
+    new: false
+  }, options);
 
-  return request;
-};
+  let intent;
 
-module.exports = {
-  /**
-   * Creates LaunchRequest
-   * @param {Object} attrs - Session attributes
-   * @param {String} [appId] - Application id
-   */
-  launchRequest: (attrs, appId) => {
-    return requestBuilder('LaunchRequest', null, true, attrs, appId);
-  },
-
-  /**
-   * Creates SessionEndedRequest
-   * @param {Object} attrs - Session attributes
-   * @param {String} [appId] - Application id
-   */
-  sessionEndedRequest: (attrs, appId) => {
-    return requestBuilder('SessionEndedRequest', null, false, attrs, appId);
-  },
-
-  /**
-   * Creates IntentRequest
-   * @param {String} name - Name of the intent to be invoked
-   * @param {Object} [slots] - Slots in simplified key:value schema. Defaults to {}
-   * @param {Object} [attrs] - Session attributes. Defaults to {}
-   * @param {boolean} [isNew] - Whether session is new. Defaults to false
-   * @param {String} [appId] - Application id
-   */
-  intentRequest: (name, slots, attrs, isNew, appId) => {
-
+  if (options.type === 'IntentRequest') {
     // Transform slots from minimal schema into slot schema sent by Amazon
-    let transformedSlots = _.transform(slots, (result, key, value) => {
+    const transformedSlots = _.transform(options.slots, (result, key, value) => {
       result[key] = {
         name: value,
         value: key
       };
     }, {});
 
-    return requestBuilder('IntentRequest', {
-      name: name,
-      slots: slots ? transformedSlots : undefined
-    }, isNew, attrs, appId);
+    intent = {
+      name: options.name,
+      slots: options.slots ? transformedSlots : undefined
+    };
   }
+
+  return {
+    session: {
+      attributes: options.attrs || {},
+      sessionId: options.sessionId,
+      application: {
+        applicationId: options.appId
+      },
+      user: {
+        userId: options.userId
+      },
+      new: options.new
+    },
+    request: {
+      type: options.type,
+      requestId: options.requestId,
+      timestamp: options.timestamp,
+      intent: intent,
+      locale: options.locale
+    }
+  };
 };

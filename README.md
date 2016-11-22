@@ -468,6 +468,31 @@ exports.handler = (event, context, callback) => {
 
 Each application should be unit-tested. We are exposing simple API helping you to create sample Alexa requests for testing and debugging.
 
+```javascript
+alexia.createRequest({
+  type: 'IntentRequest',
+  name: 'UnknownIntent',
+  slots: {},
+  attrs: {},
+  appId: 'amzn1.echo-sdk-123456',
+  sessionId: 'SessionId.357a6s7',
+  userId: 'amzn1.account.abc123',
+  requestId: 'EdwRequestId.abc123456',
+  timestamp: '2016-06-16T14:38:46Z',
+  locale: 'en-US',
+  new: false
+});
+```
+
+All the properties optional and defaults to the values you see in the example above. Sample usage:
+
+```javascript
+alexia.createRequest({type: 'IntentRequest', name: 'HelloIntent', slots: ..., attrs: ...});
+alexia.createIntentRequest('HelloIntent', slots, attrs, isNew, appId); // Shorter version - does not support all of the properties
+```
+
+Before writing unit tests make sure to install all the dependencies. In our example we will be using mocha and chai with expect.
+
 ```bash
 npm install mocha chai expect --save-dev
 ```
