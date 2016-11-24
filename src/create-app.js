@@ -26,7 +26,7 @@ const debug = nodeDebug('alexia:debug');
 module.exports = (name, options) => {
   let app = {
     name: name,
-    options: options,
+    options: options || {},
     intents: {},
     customSlots: {},
     actions: []
@@ -60,6 +60,14 @@ module.exports = (name, options) => {
    */
   app.defaultActionFail = (handler) => {
     handlers.defaultActionFail = handler;
+  };
+
+  /**
+   * Sets shouldEndSessionByDefault option that says if session should end after
+   * @param {boolean} value - default value for shouldEndSession attribute
+   */
+  app.setShouldEndSessionByDefault = (value) => {
+    app.options.shouldEndSessionByDefault = value;
   };
 
   /**
