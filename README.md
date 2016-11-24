@@ -106,6 +106,20 @@ const alexia = require('alexia');
 const app = alexia.createApp('MyApp');
 ```
 
+### Set default value for shouldEndSession
+
+If you want to set default value of shouldEndSession response property you can do it by specifying `shouldEndSessionByDefault` property in App options.
+
+```javascript
+const app = alexia.createApp('MyApp', {shouldEndSessionByDefault: true});
+```
+
+Alternatively you can use `app.setShouldEndSessionByDefault()` method.
+
+```javascript
+app.setShouldEndSessionByDefault(true);
+```
+
 ### Create Intents
 
 You have multiple options for creating intents. You can create named intents, intents with automatically generated name or intents with multiple sample utterances.
