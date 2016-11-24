@@ -172,7 +172,7 @@ app.intent('CustomSlotIntent', 'My name is {name:Name}', (slots) => {
 
 ### Session Attributes
 
-Intent can be resolved using simple string (a text response) or more complex `responseObject`. Its attribute `attrs` will override current sessionAttributes. If you wish to extend current session attributes you can use for example `Object.assign` method. To close the session set `end` attribute to `true` (default: `false`). See [Session Attributes example](examples/session-attributes.js). Session attribute `previousIntent` is reserved.
+Intent can be resolved using simple string (a text response) or more complex `responseObject`. Its attribute `attrs` will override current sessionAttributes. If you wish to extend current session attributes you can use for example `Object.assign` method. Make sure you set `end` attribute to `false` to keep the session open (default: `true`). See [Session Attributes example](examples/session-attributes.js). Session attribute `previousIntent` is reserved.
 
 ```javascript
 app.intent('AttrsIntent', 'session attributes test', (slots, attrs) => {
@@ -180,7 +180,8 @@ app.intent('AttrsIntent', 'session attributes test', (slots, attrs) => {
     text: 'Alexa response text here',
     attrs: {
       attr1: 'Whatever to be remebered in this session'
-    }
+    },
+    end: false
   };
 });
 ```

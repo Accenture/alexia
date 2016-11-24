@@ -159,15 +159,19 @@ const createCardObject = (card) => {
 
 /**
  * Reads options.end and returns bool indicating whether to end session
- * @param {object} [options] Options object
- * @param {bool} options.end Indicates whether to end session. Defaults to true
- * @returns bool from options.end or by default false
+ * @param {object} [intentOptions] Options object for intent
+ * @param {object} [appOptions] Options object for whole app
+ * @returns bool from intentOptions.end or appOptions.shouldEndSessionByDefault, if any of them is set than returns true
  */
-const getShouldEndSession = (options) => {
-  if (!options || options.end === undefined) {
-    return false;
+const getShouldEndSession = (intentOptions, appOptions) => {
+  if (!intentOptions || intentOptions.end === undefined) {
+    if(!appOptions || appOptions.shouldEndSessionByDefault === undefined){
+      return true;
+    } else {
+      return appOptions.shouldEndSessionByDefault;
+    }
   }
-  return options.end;
+  return intentOptions.end;
 };
 
 const createResponse = (options, slots, attrs, app) => {
@@ -193,11 +197,11 @@ const createResponse = (options, slots, attrs, app) => {
   }
 
   let responseObject = {
-    version: app.options ? app.options.version : '0.0.1',
+    version: (app.options && app.options.version) ? app.options.version : '0.0.1',
     sessionAttributes: sessionAttributes,
     response: {
       outputSpeech: outputSpeech,
-      shouldEndSession: getShouldEndSession(options)
+      shouldEndSession: getShouldEndSession(options, app.options)
     }
   };
 

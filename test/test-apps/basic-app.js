@@ -2,6 +2,7 @@
 const alexia = require('../..');
 const app = alexia.createApp('MyApp', {
   version: '1.2.3',
+  shouldEndSessionByDefault: true,
   ids: ['appId1', 'appId2']
 });
 

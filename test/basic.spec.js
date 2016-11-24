@@ -9,6 +9,16 @@ const intents = _.values(app.intents);
 describe('basic app handler', () => {
   let attrs;
 
+  it('should set shouldEndSessionByDefault', (done) => {
+    const testApp = alexia.createApp('testApp');
+    testApp.setShouldEndSessionByDefault(false);
+    testApp.handle(alexia.createLaunchRequest(), (response) => {
+      expect(response).to.be.defined;
+      expect(response.response.shouldEndSession).to.equal(false);
+      done();
+    });
+  });
+
   it('should create default alexa request', () => {
     const data = alexia.createRequest();
     expect(data.request.type).to.equal('IntentRequest');
@@ -63,7 +73,7 @@ describe('basic app handler', () => {
       sessionAttributes: {previousIntent: 'FirstIntent'},
       response: {
         outputSpeech: {type: 'PlainText', text: 'All good'},
-        shouldEndSession: false
+        shouldEndSession: true
       }
     };
 

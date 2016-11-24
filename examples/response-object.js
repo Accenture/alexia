@@ -26,10 +26,10 @@ app.intent('RepromptIntent', 'response with reprompt', () => {
   };
 });
 
-app.intent('CloseSessionIntent', 'close session', () => {
+app.intent('KeepSessionIntent', 'keep session', () => {
   return {
     text: 'I should terminate this session',
-    end: true
+    end: false
   };
 });
 

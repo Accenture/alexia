@@ -6,7 +6,8 @@ const app = alexia.createApp('SessionAttributesExample');
 app.intent('AttrsIntent', 'My name is {name:Name}', (slots) => {
   return {
     text: `Hi ${slots.name}`,
-    attrs: {name: slots.name}
+    attrs: {name: slots.name},
+    end: false
   };
 });
 
