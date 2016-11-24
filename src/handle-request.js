@@ -161,11 +161,11 @@ const createCardObject = (card) => {
  * Reads options.end and returns bool indicating whether to end session
  * @param {object} [options] Options object
  * @param {bool} options.end Indicates whether to end session. Defaults to true
- * @returns bool from options.end or by default true
+ * @returns bool from options.end or by default false
  */
 const getShouldEndSession = (options) => {
   if (!options || options.end === undefined) {
-    return true;
+    return false;
   }
   return options.end;
 };

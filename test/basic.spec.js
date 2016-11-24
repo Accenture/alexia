@@ -63,7 +63,7 @@ describe('basic app handler', () => {
       sessionAttributes: {previousIntent: 'FirstIntent'},
       response: {
         outputSpeech: {type: 'PlainText', text: 'All good'},
-        shouldEndSession: true
+        shouldEndSession: false
       }
     };
 
@@ -214,7 +214,7 @@ describe('basic app handler', () => {
     }
   });
 
-  it('should not create built-in intent invalid name', () => {
+  it('should not create built-in intent with invalid name', () => {
     try {
       const app2 = alexia.createApp('App2');
       app2.builtInIntent('InvalidBuiltInIntent', 'stop pls', () => 'hi');

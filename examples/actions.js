@@ -7,8 +7,7 @@ const intentA = app.intent('intentA', 'clear my calendar for {date:Date}', (slot
     text: 'Are you sure you want to clear your calendar?',
     attrs: {
         date: slots.date
-    },
-    end: false
+    }
   };
 });
 
