@@ -29,7 +29,9 @@ module.exports = (name, options) => {
     options: options,
     intents: {},
     customSlots: {},
-    actions: []
+    actions: [],
+    i18next: undefined,
+    t: key => key
   };
 
   let handlers = {
@@ -69,6 +71,12 @@ module.exports = (name, options) => {
    * @param {function} handler - Function to be called when intent is invoked
    */
   app.intent = (name, richUtterances, handler) => {
+    // Shift ommited arguments (utternaces are optional)
+    if (!handler) {
+      handler = richUtterances;
+      richUtterances = undefined;
+    }
+
     const intent = createIntent(app.intents, name, richUtterances, handler);
     app.intents[intent.name] = intent;
 
@@ -104,7 +112,31 @@ module.exports = (name, options) => {
    * @param {Function} done - Callback to be called when request is handled. Callback is called with one argument - response JSON
    */
   app.handle = (data, done) => {
-    handleRequest(app, data, handlers, done);
+    // Internationalization is enabled and locale is specified in request
+    if (app.i18next && data.request.locale) {
+
+      // Make sure all locale resources are loaded
+      app.i18next.loadResources(() => {
+
+        // Get translation function for current locale
+        const t = app.i18next.getFixedT(data.request.locale, 'translation');
+
+        // Prefix key by using intent name or request type for launch / end requests
+        const prefix = data.request.type === 'IntentRequest' ? data.request.intent.name : data.request.type;
+
+        // Wrap translation function and prepend prefix to keys to make them shorter
+        app.t = (key, options) => {
+          return t(`${prefix}.${key}`, options);
+        };
+
+        // Handle request
+        handleRequest(app, data, handlers, done);
+      });
+
+    } else {
+      // Otherwise just handle request
+      handleRequest(app, data, handlers, done);
+    }
   };
 
   /**
@@ -179,6 +211,14 @@ module.exports = (name, options) => {
       require(path.relative(__dirname, intentFile))(app);
     });
 
+  };
+
+  /**
+   * Sets i18next instance.
+   * Use this to enable internationalization and make it available to the app
+   */
+  app.setI18next = i18next => {
+    app.i18next = i18next;
   };
 
   return app;
