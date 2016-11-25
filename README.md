@@ -326,6 +326,8 @@ Feature of Alexia that helps you to control flow of the intents. To understand i
 
 By defining the action you enable transition from one intent to another. When no actions are specified, every intent transition is allowed.
 
+Action properties `from` and `to` can be defined as `string` (one intent), `array` (multiple intents) or `'*'` (all intents).
+
 Each action could have condition to check whether the transition should be handled or the fail method should be invoked. If no fail method is defined `app.defaultActionFail()` is invoked when condition of handling is not met or the action (transition) is not defined.
 
 ```javascript
@@ -335,7 +337,7 @@ app.action({
   to: 'intent1'
 });
 
-// Allow transition from start intent to `intent2`.
+// Allow transition from `@start` intent to `intent2`.
 app.action({
   from: '@start',
   to: 'intent2'
@@ -347,6 +349,12 @@ app.action({
   to: 'intent2',
   if: (slots, attrs) => slots.pin === 1234,
   fail: (slots, attrs) => 'Sorry, your pin is invalid'
+});
+
+// Allow transition from `intent2` to `intent3` and also `intent4`.
+app.action({
+  from: 'intent2',
+  to: ['intent3', 'intent4']
 });
 
 // Set default fail handler

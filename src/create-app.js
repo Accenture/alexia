@@ -129,17 +129,30 @@ module.exports = (name, options) => {
    * Creates action
    * @param {string} action - Action object
    * @param {string} action.from - Name of the intent to allow transition from
-   * @param {string} action.to - Name of th eintent to allow transition to
+   * @param {string} action.to - Name of the intent to allow transition to
    * @param {function} action.if - Function returning boolean whether this transition should be handled.
    * @param {function} action.fail - Handler to be called if `action.if` returned `false`
    */
   app.action = (action) => {
-    app.actions.push({
-      from: typeof (action.from) === 'string' ? action.from : action.from.name,
-      to: typeof (action.to) === 'string' ? action.to : action.to.name,
-      if: action.if,
-      fail: action.fail
-    });
+    if (Array.isArray(action.from)) {
+      action.from.forEach(fromItem => {
+        if (Array.isArray(action.to)) {
+          action.to.forEach(toItem => {
+            addAction(app.actions, fromItem, toItem, action.if, action.fail);
+          });
+        } else {
+          addAction(app.actions, fromItem, action.to, action.if, action.fail);
+        }
+      });
+    } else {
+      if (Array.isArray(action.to)) {
+        action.to.forEach(toItem => {
+          addAction(app.actions, action.from, toItem, action.if, action.fail);
+        });
+      } else {
+        addAction(app.actions, action.from, action.to, action.if, action.fail);
+      }
+    }
   };
 
   /**
@@ -190,4 +203,21 @@ module.exports = (name, options) => {
   };
 
   return app;
+};
+
+/**
+ * Adds action to app's actions array
+ * @param {object} actions - Actions object of alexia app
+ * @param {string} from - Name of the intent to allow transition from
+ * @param {string} to - Name of the intent to allow transition to
+ * @param {function} condition - Function returning boolean whether this transition should be handled
+ * @param {function} fail - Handler to be called if `condition` returned `false`
+ */
+const addAction = (actions ,from, to, condition, fail) => {
+  actions.push({
+    from: typeof (from) === 'string' ? from : from.name,
+    to: typeof (to) === 'string' ? to : to.name,
+    if: condition,
+    fail: fail
+  });
 };
