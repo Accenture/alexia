@@ -213,7 +213,7 @@ module.exports = (name, options) => {
  * @param {function} condition - Function returning boolean whether this transition should be handled
  * @param {function} fail - Handler to be called if `condition` returned `false`
  */
-const addAction = (actions ,from, to, condition, fail) => {
+const addAction = (actions, from, to, condition, fail) => {
   actions.push({
     from: typeof (from) === 'string' ? from : from.name,
     to: typeof (to) === 'string' ? to : to.name,

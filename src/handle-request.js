@@ -165,7 +165,7 @@ const createCardObject = (card) => {
  */
 const getShouldEndSession = (intentOptions, appOptions) => {
   if (!intentOptions || intentOptions.end === undefined) {
-    if(!appOptions || appOptions.shouldEndSessionByDefault === undefined){
+    if (!appOptions || appOptions.shouldEndSessionByDefault === undefined) {
       return true;
     } else {
       return appOptions.shouldEndSessionByDefault;

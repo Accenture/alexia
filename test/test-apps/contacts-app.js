@@ -4,7 +4,7 @@ const alexia = require('../..');
 const app = alexia.createApp('ContactsApp');
 
 app.intent('OpenContactList', 'Open contact list', () => {
-  return 'You can list your contacts, add new one or change already saved ones.'
+  return 'You can list your contacts, add new one or change already saved ones.';
 });
 
 app.intent('NewContact', 'Create new contact', () => {
@@ -24,21 +24,21 @@ app.intent('SetNumber', 'Set number to {number:NUMBER}', () => {
 });
 
 app.intent('CloseContactList', 'Close contact list', () => {
-  return 'See you next time.'
+  return 'See you next time.';
 });
 
 app.action({
   from: 'OpenContactList',
-  to: ['NewContact','ChangeContact']
+  to: ['NewContact', 'ChangeContact']
 });
 
 app.action({
-  from: ['NewContact','ChangeContact'],
-  to: ['SetName','SetNumber']
+  from: ['NewContact', 'ChangeContact'],
+  to: ['SetName', 'SetNumber']
 });
 
 app.action({
-  from: ['NewContact','ChangeContact','SetName','SetNumber'],
+  from: ['NewContact', 'ChangeContact', 'SetName', 'SetNumber'],
   to: 'CloseContactList'
 });
 
