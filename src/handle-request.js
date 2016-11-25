@@ -84,7 +84,7 @@ const callHandler = (handler, slots, attrs, app, data, done) => {
 };
 
 /**
- * Checks for `actions` presence to help us with Alexa coznversation workflow configuration
+ * Checks for `actions` presence to help us with Alexa conversation workflow configuration
  *
  *  1) no actions: just call the intent.handler method without any checks
  *  2) with actions: check if action for current intent transition is found
@@ -165,7 +165,7 @@ const createCardObject = (card) => {
  */
 const getShouldEndSession = (intentOptions, appOptions) => {
   if (!intentOptions || intentOptions.end === undefined) {
-    if(!appOptions || appOptions.shouldEndSessionByDefault === undefined){
+    if (!appOptions || appOptions.shouldEndSessionByDefault === undefined) {
       return true;
     } else {
       return appOptions.shouldEndSessionByDefault;
