@@ -9,6 +9,16 @@ const intents = _.values(app.intents);
 describe('basic app handler', () => {
   let attrs;
 
+  it('should set shouldEndSessionByDefault', (done) => {
+    const testApp = alexia.createApp('testApp');
+    testApp.setShouldEndSessionByDefault(false);
+    testApp.handle(alexia.createLaunchRequest(), (response) => {
+      expect(response).to.be.defined;
+      expect(response.response.shouldEndSession).to.equal(false);
+      done();
+    });
+  });
+
   it('should create default alexa request', () => {
     const data = alexia.createRequest();
     expect(data.request.type).to.equal('IntentRequest');
@@ -214,7 +224,7 @@ describe('basic app handler', () => {
     }
   });
 
-  it('should not create built-in intent invalid name', () => {
+  it('should not create built-in intent with invalid name', () => {
     try {
       const app2 = alexia.createApp('App2');
       app2.builtInIntent('InvalidBuiltInIntent', 'stop pls', () => 'hi');
