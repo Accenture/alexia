@@ -54,7 +54,7 @@ const genIntentSchema = (intents) => {
       intent: intent.name
     };
 
-        // Property slots is optional
+    // Property slots is optional
     if (intent.slots && intent.slots.length > 0) {
       currentSchema.slots = intent.slots;
     }

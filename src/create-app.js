@@ -8,10 +8,13 @@ const handleRequest = require('./handle-request');
 const createIntent = require('./create-intent');
 const createCustomSlot = require('./create-custom-slot');
 const generateSpeechAssets = require('./generate-speech-assets');
+const generateSpeechAssetsI18n = require('./generate-speech-assets-i18n');
 const saveSpeechAssets = require('./save-speech-assets');
 const builtInIntentsMap = require('./built-in-intents-map');
 const createServer = require('./create-server');
 const parseError = require('./error-handler').parseError;
+const rimraf = require('rimraf');
+const fs = require('fs');
 
 const builtInIntentsList = _.keys(builtInIntentsMap).join(', ');
 const debug = nodeDebug('alexia:debug');
@@ -189,6 +192,7 @@ module.exports = (name, options) => {
 
   /**
    * Generate speech assets object: {schema, utterances, customSlots}
+   * @deprecated Use `app.saveSpeechAssets()` instead
    */
   app.speechAssets = () => {
     return generateSpeechAssets(app);
@@ -200,8 +204,25 @@ module.exports = (name, options) => {
    */
   app.saveSpeechAssets = (directory) => {
     const dir = directory || 'speechAssets';
-    const assets = generateSpeechAssets(app);
-    saveSpeechAssets(assets, dir);
+
+    rimraf.sync(dir);
+
+    // No internationalization
+    if (!app.i18next) {
+      const assets = generateSpeechAssets(app);
+      saveSpeechAssets(assets, dir);
+
+    } else {
+      // Internationalization is enabled
+      app.i18next.loadResources(() => {
+        const localizedAssets = generateSpeechAssetsI18n(app);
+
+        _.forEach(localizedAssets, (assets, locale) => {
+          fs.mkdirSync(dir);
+          saveSpeechAssets(assets, `${dir}/${locale}`);
+        });
+      });
+    }
   };
 
   /**
