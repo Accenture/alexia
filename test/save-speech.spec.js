@@ -45,9 +45,9 @@ describe('saveSpeechAssets', () => {
 
     const mySpeechAssetsDirectory = 'mySpeechAssetsDirectory';
 
-    before(() => {
+    before(done => {
       rimraf.sync(mySpeechAssetsDirectory);
-      app.saveSpeechAssets(mySpeechAssetsDirectory);
+      app.saveSpeechAssets(mySpeechAssetsDirectory, done);
     });
 
     it('should save speechAssets to customDirectory ', () => {

@@ -1,0 +1,20 @@
+{
+  "LaunchRequest": {
+    "text": "Welcome"
+  },
+  "LocalizedIntent": {
+    "utterances": ["say hello", "say hello to me"],
+    "text": "Hello World"
+  },
+  "LocalizedSlotIntent": {
+    "utterances":  "my magic number is {number:Number}",
+    "text": "hello {{number}}"
+  },
+  "YesIntent": {
+    "text": "Testing the dot syntax",
+    "card": {
+      "title": "Title",
+      "content": "Content"
+    }
+  }
+}

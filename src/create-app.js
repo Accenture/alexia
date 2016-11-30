@@ -8,10 +8,13 @@ const handleRequest = require('./handle-request');
 const createIntent = require('./create-intent');
 const createCustomSlot = require('./create-custom-slot');
 const generateSpeechAssets = require('./generate-speech-assets');
+const generateSpeechAssetsI18n = require('./generate-speech-assets-i18n');
 const saveSpeechAssets = require('./save-speech-assets');
 const builtInIntentsMap = require('./built-in-intents-map');
 const createServer = require('./create-server');
 const parseError = require('./error-handler').parseError;
+const rimraf = require('rimraf');
+const fs = require('fs');
 
 const builtInIntentsList = _.keys(builtInIntentsMap).join(', ');
 const debug = nodeDebug('alexia:debug');
@@ -29,7 +32,9 @@ module.exports = (name, options) => {
     options: options || {},
     intents: {},
     customSlots: {},
-    actions: []
+    actions: [],
+    i18next: undefined,
+    t: key => key
   };
 
   let handlers = {
@@ -77,6 +82,12 @@ module.exports = (name, options) => {
    * @param {function} handler - Function to be called when intent is invoked
    */
   app.intent = (name, richUtterances, handler) => {
+    // Shift ommited arguments (utternaces are optional)
+    if (!handler) {
+      handler = richUtterances;
+      richUtterances = undefined;
+    }
+
     const intent = createIntent(app.intents, name, richUtterances, handler);
     app.intents[intent.name] = intent;
 
@@ -112,7 +123,38 @@ module.exports = (name, options) => {
    * @param {Function} done - Callback to be called when request is handled. Callback is called with one argument - response JSON
    */
   app.handle = (data, done) => {
-    handleRequest(app, data, handlers, done);
+    // Internationalization is enabled and locale is specified in request
+    if (app.i18next && data.request.locale) {
+
+      // Make sure all locale resources are loaded
+      app.i18next.loadResources(() => {
+
+        // Get translation function for current locale
+        const t = app.i18next.getFixedT(data.request.locale, 'translation');
+
+        // Prefix key by using intent name or request type for launch / end requests
+        let prefix;
+        if (data.request.type === 'IntentRequest') {
+          prefix = _.last(data.request.intent.name.split('.'));
+
+        } else {
+          // Transform f.e: AMAZON.YesIntent -> YesIntent
+          prefix = data.request.type;
+        }
+
+        // Wrap translation function and prepend prefix to keys to make them shorter
+        app.t = (key, options) => {
+          return t(`${prefix}.${key}`, options);
+        };
+
+        // Handle request
+        handleRequest(app, data, handlers, done);
+      });
+
+    } else {
+      // Otherwise just handle request
+      handleRequest(app, data, handlers, done);
+    }
   };
 
   /**
@@ -157,6 +199,7 @@ module.exports = (name, options) => {
 
   /**
    * Generate speech assets object: {schema, utterances, customSlots}
+   * @deprecated Use `app.saveSpeechAssets()` instead
    */
   app.speechAssets = () => {
     return generateSpeechAssets(app);
@@ -165,11 +208,34 @@ module.exports = (name, options) => {
   /**
    * Save speech assets to their respective files: intentSchema.json, utterances.txt, customSlots.txt
    * @param {string} [directory] - directory folder name, defaults to '/speechAssets'
+   * @param {function} [done] - callback to be called once assets are saved (useful for internationalized apps)
    */
-  app.saveSpeechAssets = (directory) => {
+  app.saveSpeechAssets = (directory, done) => {
     const dir = directory || 'speechAssets';
-    const assets = generateSpeechAssets(app);
-    saveSpeechAssets(assets, dir);
+
+    rimraf.sync(dir);
+
+    // No internationalization
+    if (!app.i18next) {
+      const assets = generateSpeechAssets(app);
+      saveSpeechAssets(assets, dir);
+      if (done) done();
+
+    } else {
+      // Internationalization is enabled
+      app.i18next.loadResources(() => {
+        const localizedAssets = generateSpeechAssetsI18n(app);
+
+        fs.mkdirSync(dir);
+
+        _.forEach(localizedAssets, (assets, locale) => {
+          saveSpeechAssets(assets, `${dir}/${locale}`);
+        });
+
+        /* istanbul ignore else */
+        if (done) done();
+      });
+    }
   };
 
   /**
@@ -200,6 +266,14 @@ module.exports = (name, options) => {
       require(path.relative(__dirname, intentFile))(app);
     });
 
+  };
+
+  /**
+   * Sets i18next instance.
+   * Use this to enable internationalization and make it available to the app
+   */
+  app.setI18next = i18next => {
+    app.i18next = i18next;
   };
 
   return app;

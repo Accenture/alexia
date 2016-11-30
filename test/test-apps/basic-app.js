@@ -83,4 +83,8 @@ app.intent('AnotherCardIntentSample', 'card intent', () => {
   };
 });
 
+app.intent('IntentWithoutUtterances', () => {
+  return 'All good.';
+});
+
 module.exports = app;

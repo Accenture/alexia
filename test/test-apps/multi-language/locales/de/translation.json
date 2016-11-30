@@ -1,0 +1,19 @@
+{
+  "LaunchRequest": {
+    "text": "Willkommen"
+  },
+  "LocalizedIntent": {
+    "utterances": "sag hallo",
+    "text": "Hallo Welt"
+  },
+  "LocalizedSlotIntent": {
+    "utterances": "Meine magische nummer ist {number:Number}",
+    "text": "hallo {{number}}"
+  },
+  "YesIntent": {
+    "text": "Testen der Punktsyntax",
+    "nested": {
+      "nah": "meh"
+    }
+  }
+}

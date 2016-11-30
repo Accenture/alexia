@@ -20,7 +20,8 @@ exports.intentSchema = {
     {intent: 'IntentA'},
     {intent: 'IntentB'},
     {intent: 'e'},
-    {intent: 'AnotherCardIntentSample'}
+    {intent: 'AnotherCardIntentSample'},
+    {intent: 'IntentWithoutUtterances'}
   ]
 };
 
