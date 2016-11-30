@@ -5,7 +5,9 @@ const parseRichUtterances = require('./parse-rich-utterances');
 module.exports = (app) => {
   let assets = {};
 
-  _.each(app.i18next.languages, locale => {
+  const languages = app.i18next.options.preload;
+
+  _.each(languages, locale => {
     const intentSchemaAndUtterances = genIntentSchemaAndUtterances(app, locale);
 
     assets[locale] = {
@@ -27,9 +29,7 @@ const genIntentSchemaAndUtterances = (app, locale) => {
     intents: []
   };
 
-  let allUtterances = [
-
-  ];
+  let allUtterances = [];
 
   // Load complete locale resource
   const localeResource = app.i18next.getResource(locale, 'translation');
@@ -53,16 +53,15 @@ const genIntentSchemaAndUtterances = (app, locale) => {
     let slots = [];
     let utterances = [];
 
+    // Transform intent utterances to array if its string
+    let intentUtterances = _.isArray(intentResource.utterances) ? intentResource.utterances : [intentResource.utterances];
+
     // Parse rich utterances to extract slot types and transform utterances to simle form
-    parseRichUtterances(intentResource.utterances, slots, utterances);
+    parseRichUtterances(intentUtterances, slots, utterances);
 
     // Slots found
     if (slots.length > 0) {
-      if (!currentSchema.slots) {
-        currentSchema.slots = [];
-      }
-
-      currentSchema.slots = currentSchema.slots.concat(slots);
+      currentSchema.slots = slots;
     }
 
     // Iterate over each utterance, transform and add it to array

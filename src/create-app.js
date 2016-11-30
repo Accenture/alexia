@@ -133,7 +133,14 @@ module.exports = (name, options) => {
         const t = app.i18next.getFixedT(data.request.locale, 'translation');
 
         // Prefix key by using intent name or request type for launch / end requests
-        const prefix = data.request.type === 'IntentRequest' ? data.request.intent.name : data.request.type;
+        let prefix;
+        if (data.request.type === 'IntentRequest') {
+          prefix = _.last(data.request.intent.name.split('.'));
+
+        } else {
+          // Transform f.e: AMAZON.YesIntent -> YesIntent
+          prefix = data.request.type;
+        }
 
         // Wrap translation function and prepend prefix to keys to make them shorter
         app.t = (key, options) => {
@@ -201,8 +208,9 @@ module.exports = (name, options) => {
   /**
    * Save speech assets to their respective files: intentSchema.json, utterances.txt, customSlots.txt
    * @param {string} [directory] - directory folder name, defaults to '/speechAssets'
+   * @param {function} [done] - callback to be called once assets are saved (useful for internationalized apps)
    */
-  app.saveSpeechAssets = (directory) => {
+  app.saveSpeechAssets = (directory, done) => {
     const dir = directory || 'speechAssets';
 
     rimraf.sync(dir);
@@ -211,16 +219,21 @@ module.exports = (name, options) => {
     if (!app.i18next) {
       const assets = generateSpeechAssets(app);
       saveSpeechAssets(assets, dir);
+      if (done) done();
 
     } else {
       // Internationalization is enabled
       app.i18next.loadResources(() => {
         const localizedAssets = generateSpeechAssetsI18n(app);
 
+        fs.mkdirSync(dir);
+
         _.forEach(localizedAssets, (assets, locale) => {
-          fs.mkdirSync(dir);
           saveSpeechAssets(assets, `${dir}/${locale}`);
         });
+
+        /* istanbul ignore else */
+        if (done) done();
       });
     }
   };

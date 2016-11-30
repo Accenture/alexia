@@ -1,6 +1,7 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
+const _ = require('lodash');
 
 module.exports = (assets, directory) => {
 
@@ -12,9 +13,11 @@ module.exports = (assets, directory) => {
 
   // Save customSlots
   const customSlotsDir = path.join(directory, 'customSlots');
-  if (assets.customSlots) {
+  const customSlotNames = _.keys(assets.customSlots);
+
+  if (customSlotNames && customSlotNames.length > 0) {
     fs.mkdirSync(customSlotsDir);
-    Object.keys(assets.customSlots).forEach((key) => {
+    customSlotNames.forEach((key) => {
       const newLineFormat = assets.customSlots[key].join('\n');
       saveToFile(newLineFormat, customSlotsDir, key, 'txt');
     });
