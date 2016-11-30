@@ -53,6 +53,7 @@ Alexia helps you to write Amazon Echo skills using Node.js. This framework handl
 - [Terminology](#terminology)
 - [Features and Samples](#features-and-samples)
   - [Create App](#create-app)
+  - [Set default value for shouldEndSession](#set-default-value-for-shouldendsession)
   - [Create Intents](#create-intents)
   - [Create Welcome Message](#create-welcome-message)
   - [Built-in Intents](#built-in-intents)
@@ -62,11 +63,13 @@ Alexia helps you to write Amazon Echo skills using Node.js. This framework handl
   - [Cards](#cards)
   - [Reprompt](#reprompt)
   - [SSML](#ssml)
+  - [Read Original Request Data](#read-original-request-data)
   - [Asynch Intent Handling](#asynch-intent-handling)
   - [Generate Speech Assets](#generate-speech-assets)
   - [Save Speech Assets To Directory](#save-speech-assets-to-directory)
   - [Register Intents using pattern matching](#register-intents-using-pattern-matching)
   - [Actions](#actions)
+  - [Localization](#localization)
   - [Handling Amazon Requests](#handling-amazon-requests)
   - [Handling Amazon Requests Manually](#handling-amazon-requests-manually)
 - [Deploy](#deploy)
@@ -360,6 +363,47 @@ app.action({
 // Set default fail handler
 app.defaultActionFail(() => 'Sorry, your request is invalid');
 ```
+
+### Localization
+
+Alexia uses [i18next](https://github.com/i18next/i18next) for localizing response texts, utterances and custom slots.
+
+For better understanding see localized app example: [examples/multi-language](examples/multi-language).
+
+These are the steps required to localize your existing application:
+
+1. Install dependencies: `npm install --save i18next i18next-node-fs-backend`
+2. Initialize `i18next` instance - see [the example app](examples/multi-language/multi-language-app.js)
+3. Set `i18next` instance to your app to enable localization: `app.setI18next(i18next)`
+4. Create directory with all locales
+5. Ommit utterances in all intents and access the translate function using `app.t('key')` 
+
+Localized intent example:
+
+```javascript
+app.intent('LocalizedIntent', slots => {
+  return app.t('text', slots);
+});
+```
+
+Example `locales` directory structure:
+
+```
+locales/
+├── en/                  # Directory for all en locales
+│   ├── translation.js   # Translations of response texts and utterances for each intent
+│   └── custom-slots.js  # Translations of custom slots
+└── de/                  # Directory for all de locales ...
+    ├── translation.js
+    └── custom-slots.js
+```
+
+Localization notes:
+- You can localize `LaunchRequest` or `SessionEndedRequest` as well. Just add the entry along the intent names in translations
+- To localize built in intents, say `AMAZON.YesIntent` use entry names after the `.` suffix. So `AMAZON.YesIntent` becomes just `YesIntent`
+- To access the translation use: `app.t('key')` This `key` needs to be nested in the current intent translation entry. You don't have to use the full path to the key - the prefix is automatically added depending on the current request
+- Each intent translation should have `utterances` property. We support the `richUtterances` syntax f.e: `My age is {age:Number}`
+- The locale to be used is decided depending on the `data.request.locale` Its value could be currently one of: `en-US`, `en-GB`, `de-DE`
 
 ### Handling Amazon Requests
 

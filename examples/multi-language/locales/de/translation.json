@@ -1,0 +1,15 @@
+{
+  "LaunchRequest": {
+    "text": "Wilkommen"
+  },
+  "SessionEndedRequest": {
+    "text": "auf Wiedersehen"
+  },
+  "LocalizedIntent": {
+    "utterances": "Meine name ist {name:Name}",
+    "text": "Hallo {{name}}"
+  },
+  "YesIntent": {
+    "text": "Hallo"
+  }
+}
