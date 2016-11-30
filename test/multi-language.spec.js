@@ -100,7 +100,7 @@ describe('multi language app', () => {
   });
 
   it('should save localized speech assets', (done) => {
-    // Note: the testing app is missing custom-slots definition for `de` locale in purpose
+    // Note: the testing app is missing custom-slots definition for `de` locale on purpose
     app.saveSpeechAssets('speechAssets', done);
   });
 
