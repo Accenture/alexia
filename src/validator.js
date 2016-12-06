@@ -13,7 +13,7 @@ module.exports = {
    * possesive apostrophes, hyphens and brackets for slots.
    * @see https://developer.amazon.com/appsandservices/solutions/alexa/alexa-skills-kit/docs/defining-the-voice-interface
    */
-  isUtteranceValid: (utterance) => /^[a-z\s.'\-{}]*$/gmi.test(utterance),
+  isUtteranceValid: (utterance) => /^[a-z\s.'\-{}äöüÄÖÜß]*$/gmi.test(utterance),
 
   /**
    * @returns {boolean} whether given custom slot name is correct or not.

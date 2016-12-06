@@ -124,13 +124,15 @@ module.exports = (name, options) => {
    */
   app.handle = (data, done) => {
     // Internationalization is enabled and locale is specified in request
-    if (app.i18next && data.request.locale) {
+    if (app.i18next) {
+
+      const locale = data.request.locale || 'en-US';
 
       // Make sure all locale resources are loaded
       app.i18next.loadResources(() => {
 
         // Get translation function for current locale
-        const t = app.i18next.getFixedT(data.request.locale, 'translation');
+        const t = app.i18next.getFixedT(locale, 'translation');
 
         // Prefix key by using intent name or request type for launch / end requests
         let prefix;
