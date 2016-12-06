@@ -56,6 +56,18 @@ describe('multi language app', () => {
     });
   });
 
+  it('should handle LocalizedIntent without locale (backwards compatibility)', done => {
+    const request = alexia.createRequest({
+      name: 'LocalizedIntent'
+    });
+    delete request.request.locale;
+
+    app.handle(request, data => {
+      expect(data.response.outputSpeech.text).to.equal('Hello World');
+      done();
+    });
+  });
+
   it('should have access to app.t function for all apps', (done) => {
     // This app is not localized
     const app2 = alexia.createApp();

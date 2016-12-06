@@ -7,13 +7,10 @@
     "text": "Hallo Welt"
   },
   "LocalizedSlotIntent": {
-    "utterances": "Meine magische nummer ist {number:Number}",
+    "utterances": "Meine magische nummer ist {number:Number}. Testen äöüÄÖÜß",
     "text": "hallo {{number}}"
   },
   "YesIntent": {
-    "text": "Testen der Punktsyntax",
-    "nested": {
-      "nah": "meh"
-    }
+    "text": "Testen der Punktsyntax"
   }
 }
