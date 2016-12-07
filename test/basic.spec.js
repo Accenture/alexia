@@ -263,17 +263,29 @@ describe('basic app handler', () => {
     expect(app2.intents['SomeIntent'].slots).to.have.length(1);
   });
 
-  it('should handle AnotherCardIntentSample with card type', () => {
+  it('should handle AnotherCardIntentSample with card type', (done) => {
     const request = alexia.createIntentRequest('AnotherCardIntentSample', null, null, false, 'appId1');
     app.handle(request, (response) => {
       expect(response.response.card.type).to.equal('Standard');
+      done();
     });
   });
 
-  it('should handle intent and set shouldEndSession to false', () => {
+  it('should handle intent and set shouldEndSession to false', (done) => {
     const request = alexia.createIntentRequest('AnotherCardIntentSample', null, null, false, 'appId1');
     app.handle(request, (response) => {
       expect(response.response.shouldEndSession).to.equal(false);
+      done();
+    });
+  });
+
+  it('should handle request with string payload', (done) => {
+    const request = alexia.createIntentRequest('AnotherCardIntentSample', null, null, false, 'appId1');
+    const stringifiedRequest = JSON.stringify(request);
+
+    app.handle(stringifiedRequest, (response) => {
+      expect(response.response.outputSpeech.text).to.equal('Hey');
+      done();
     });
   });
 
