@@ -7,11 +7,13 @@ const parseError = require('./error-handler').parseError;
 /**
  * Handles request and calls done when finished
  * @param {Object} app - Application object
- * @param {Object} data - Request JSON to be handled
+ * @param {Object|string} data - Request JSON or JSON string to be handled
  * @param {Function} handlers - Handlers to be called. Contains onStart, onEnd, actionFail
  * @param {Function} done - Callback to be called when request is handled. Callback is called with one argument - response JSON
  */
 module.exports = (app, data, handlers, done) => {
+  data = typeof data === 'object' ? data : JSON.parse(data);
+
   const appId = data.session.application.applicationId;
   const options = app.options;
 
