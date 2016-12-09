@@ -23,11 +23,7 @@ module.exports = (app, data, handlers, done) => {
     throw e;
   }
 
-  if (data.session.new) {
-    data.session.attributes = {
-      previousIntent: '@start'
-    };
-  } else if (!data.session.attributes) {
+  if (!data.session.attributes) {
     data.session.attributes = {};
   }
 
@@ -38,7 +34,7 @@ module.exports = (app, data, handlers, done) => {
   switch (requestType) {
 
     case 'LaunchRequest':
-      callHandler(handlers.onStart, null, data.session.attributes, app, data, done);
+      callHandler(handlers.onStart, null, data.session.attributes, app, data, false, done);
       break;
 
     case 'IntentRequest':
@@ -55,7 +51,7 @@ module.exports = (app, data, handlers, done) => {
       break;
 
     case 'SessionEndedRequest':
-      callHandler(handlers.onEnd, null, data.session.attributes, app, data, done);
+      callHandler(handlers.onEnd, null, data.session.attributes, app, data, false, done);
       break;
 
     default:
@@ -65,14 +61,33 @@ module.exports = (app, data, handlers, done) => {
 
 };
 
-const callHandler = (handler, slots, attrs, app, data, done) => {
+/**
+ * @returns {String} options.attrs.previousIntent if set, otherwise returns previousIntent
+ */
+const getPreviousIntent = (options, previousIntent) => {
+  if (options.attrs && options.attrs.previousIntent) {
+    return options.attrs.previousIntent;
+
+  } else {
+    return previousIntent;
+  }
+};
+
+const callHandler = (handler, slots, attrs, app, data, error, done) => {
 
   // Transform slots into simple key:value schema
   slots = _.transform(slots, (result, value) => {
     result[value.name] = value.value;
   }, {});
 
-  const optionsReady = (options) => {
+  const optionsReady = options => {
+    if (data.session.new && data.request.type === 'LaunchRequest') {
+      attrs.previousIntent = getPreviousIntent(options, '@start');
+
+    } else if (!error && !options.error && data.request.type === 'IntentRequest') {
+      attrs.previousIntent = getPreviousIntent(options, data.request.intent.name);
+    }
+
     done(createResponse(options, slots, attrs, app));
   };
 
@@ -105,8 +120,7 @@ const checkActionsAndHandle = (intent, slots, attrs, app, handlers, data, done) 
 
   if (app.actions.length === 0) {
     // There are no actions. Just call handler on this intent
-    attrs.previousIntent = intent.name;
-    callHandler(intent.handler, slots, attrs, app, data, done);
+    callHandler(intent.handler, slots, attrs, app, data, false, done);
 
   } else {
     // If there are some actions, try to validate current transition
@@ -126,20 +140,20 @@ const checkActionsAndHandle = (intent, slots, attrs, app, handlers, data, done) 
       if (action.if ? action.if(slots, attrs) : true) {
 
         // Transition is valid. Remember intentName and handle intent
-        attrs.previousIntent = intent.name;
-        callHandler(intent.handler, slots, attrs, app, data, done);
+        callHandler(intent.handler, slots, attrs, app, data, false, done);
 
       } else {
         // Transition is invalid. Call fail function
         if (action.fail) {
-          callHandler(action.fail, slots, attrs, app, data, done);
+          callHandler(action.fail, slots, attrs, app, data, true, done);
         } else {
-          callHandler(handlers.defaultActionFail, slots, attrs, app, data, done);
+          callHandler(handlers.defaultActionFail, slots, attrs, app, data, true, done);
         }
       }
 
     } else {
-      callHandler(handlers.defaultActionFail, slots, attrs, app, data, done);
+      // No action found
+      callHandler(handlers.defaultActionFail, slots, attrs, app, data, true, done);
     }
   }
 };
