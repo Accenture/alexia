@@ -1,7 +1,9 @@
 'use strict';
 const expect = require('chai').expect;
 const alexia = require('..');
+const fs = require('fs');
 const app = require('./test-apps/multi-language/multi-language-app');
+const assetsMock = require('./mock/multi-lang-assets.js');
 
 describe('multi language app', () => {
   it('should create app', () => {
@@ -116,4 +118,49 @@ describe('multi language app', () => {
     app.saveSpeechAssets('speechAssets', done);
   });
 
+  it('should save intentSchema to JSON file for ENG locale that contains all intents', (done) => {
+    app.saveSpeechAssets('speechAssets', () => {
+      const intentSchemaENG = fs.readFileSync('speechAssets/en/intentSchema.json', 'utf8');
+      expect(intentSchemaENG).to.exist;
+      expect(JSON.parse(intentSchemaENG)).to.deep.equal(assetsMock.intentSchema);
+      done();
+    });
+  });
+
+  it('should save utterances to *.txt file for ENG locale that contains all utterances', (done) => {
+    app.saveSpeechAssets('speechAssets', () => {
+      const utterancesENG = fs.readFileSync('speechAssets/en/utterances.txt', 'utf8');
+      expect(utterancesENG).to.exist;
+      expect(utterancesENG.split('\n')).to.deep.equal(assetsMock.utterancesENG);
+      done();
+    });
+  });
+
+  it('should save intentSchema to JSON file for DE locale that contains all intents', (done) => {
+    app.saveSpeechAssets('speechAssets', () => {
+      const intentSchemaDE = fs.readFileSync('speechAssets/en/intentSchema.json', 'utf8');
+      expect(intentSchemaDE).to.exist;
+      expect(JSON.parse(intentSchemaDE)).to.deep.equal(assetsMock.intentSchema);
+      done();
+    });
+  });
+
+  it('should save utterances to *.txt file for DE locale that contains all utterances', (done) => {
+    app.saveSpeechAssets('speechAssets', () => {
+      const utterancesDE = fs.readFileSync('speechAssets/de/utterances.txt', 'utf8');
+      expect(utterancesDE).to.exist;
+      expect(utterancesDE.split('\n')).to.deep.equal(assetsMock.utterancesDE);
+      done();
+    });
+  });
+
+  it('should save customSlot to separate file with correct content for ENG locale', () => {
+    const customSlotFile = fs.readFileSync('speechAssets/en/customSlots/item.txt', 'utf8');
+    expect(customSlotFile).to.exist;
+    expect(customSlotFile.split('\n')).to.deep.equal(assetsMock.itemCustomSlot);
+  });
+
+  it('should not save customSlot to separate file for DE locale since it is not defined', () => {
+    expect(fs.existsSync('speechAssets/de/customSlots/item.txt')).to.equal(false);
+  });
 });

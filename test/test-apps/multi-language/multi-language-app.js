@@ -43,4 +43,8 @@ app.intent('yes', () => {
   return app.t('text');
 });
 
+app.builtInIntent('help', () => {
+  return app.t('text');
+});
+
 module.exports = app;
