@@ -11,6 +11,13 @@
     "text": "hallo {{number}}"
   },
   "YesIntent": {
-    "text": "Testen der Punktsyntax"
+    "text": "Testen der Punktsyntax",
+    "card": {
+      "title": "Titel",
+      "content": "Inhalt"
+    }
+  },
+  "HelpIntent": {
+    "utterances": "Testen eingebaut intent mit utterance"
   }
 }

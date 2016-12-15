@@ -43,8 +43,11 @@ const genIntentSchemaAndUtterances = (app, locale) => {
 
     intentSchema.intents.push(currentSchema);
 
+    // Remove AMAZON prefix for built-in intents
+    const nameWithoutAmazonPrefix = _.last(intent.name.split('.'));
+
     // Get current intent resource
-    const intentResource = localeResource[intent.name];
+    const intentResource = localeResource[nameWithoutAmazonPrefix];
 
     if (!intentResource) {
       return;
@@ -66,7 +69,9 @@ const genIntentSchemaAndUtterances = (app, locale) => {
 
     // Iterate over each utterance, transform and add it to array
     _.each(utterances, utterance => {
-      allUtterances.push(`${intent.name} ${utterance}`);
+      if (utterance) {
+        allUtterances.push(`${intent.name} ${utterance}`);
+      }
     });
 
   });
