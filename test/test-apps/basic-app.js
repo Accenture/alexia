@@ -67,7 +67,7 @@ app.intent('IntentB', 'another utterance', (slots, attrs) => {
 
 app.intent('IntentC', 'another utterance', (slots, attrs) => {
   return {
-    text: '<speak>Hi</speak>',
+    text: '<speak>Hi</speak>'
   };
 });
 
