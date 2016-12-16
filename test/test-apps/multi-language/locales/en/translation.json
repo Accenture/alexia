@@ -16,5 +16,8 @@
       "title": "Title",
       "content": "Content"
     }
+  },
+  "HelpIntent": {
+    "utterances": "Testing built in intent with utterance"
   }
 }
