@@ -19,6 +19,7 @@ exports.intentSchema = {
     {intent: 'AMAZON.CancelIntent'},
     {intent: 'IntentA'},
     {intent: 'IntentB'},
+    {intent: 'IntentC'},
     {intent: 'e'},
     {intent: 'AnotherCardIntentSample'},
     {intent: 'IntentWithoutUtterances'}
@@ -39,6 +40,7 @@ exports.utterances = [
   'AMAZON.HelpIntent yup',
   'IntentA another utterance',
   'IntentB another utterance',
+  'IntentC another utterance',
   'e async response',
   'AnotherCardIntentSample card intent'
 ];

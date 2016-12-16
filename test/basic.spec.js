@@ -116,8 +116,18 @@ describe('basic app handler', () => {
     });
   });
 
+  it('should handle IntentC request with SSML outputSpeech type', (done) => {
+    const request = alexia.createIntentRequest('IntentC', null, attrs, false, 'appId1');
+
+    app.handle(request, (response) => {
+      attrs = response.sessionAttributes;
+      expect(response.response.outputSpeech).to.deep.equal({type: 'SSML', ssml: '<speak>Hi</speak>'});
+      done();
+    });
+  });
+
   it('should handle async intent', (done) => {
-    const request = alexia.createIntentRequest(intents[11].name, null, null, false, 'appId1');
+    const request = alexia.createIntentRequest(intents[12].name, null, null, false, 'appId1');
 
     app.handle(request, (response) => {
       expect(response.response.outputSpeech.text).equal('I just did stuff asynchronously. Thank you for this opportunity');
