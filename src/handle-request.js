@@ -244,12 +244,12 @@ const createResponse = (options, slots, attrs, app) => {
  */
 const createOutputSpeechObject = (text, ssml) => {
   let outputSpeech = {};
-  if (!ssml) {
-    outputSpeech.type = 'PlainText';
-    outputSpeech.text = text;
-  } else {
+  if (text.includes('<speak>') || ssml) {
     outputSpeech.type = 'SSML';
     outputSpeech.ssml = text;
+  } else {
+    outputSpeech.type = 'PlainText';
+    outputSpeech.text = text;
   }
   return outputSpeech;
 };

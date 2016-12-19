@@ -65,6 +65,12 @@ app.intent('IntentB', 'another utterance', (slots, attrs) => {
   return `attribute value is ${attrs.yes}`;
 });
 
+app.intent('IntentC', 'another utterance', (slots, attrs) => {
+  return {
+    text: '<speak>Hi</speak>'
+  };
+});
+
 app.intent(null, 'async response', (slots, attrs, data, done) => {
   setTimeout(() => {
     done('I just did stuff asynchronously. Thank you for this opportunity');
