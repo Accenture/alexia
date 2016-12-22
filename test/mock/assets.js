@@ -4,14 +4,13 @@ exports.intentSchema = {
   intents: [
     {intent: 'FirstIntent'},
     {intent: 'NamedIntent'},
-    {intent: 'a'},
-    {intent: 'b'},
+    {intent: 'Multiple'},
     {
-      intent: 'c',
+      intent: 'Age',
       slots: [{name: 'age', type: 'AMAZON.NUMBER'}]
     },
     {
-      intent: 'd',
+      intent: 'Name',
       slots: [{name: 'name', type: 'Name'}]
     },
     {intent: 'AMAZON.StopIntent'},
@@ -20,7 +19,7 @@ exports.intentSchema = {
     {intent: 'IntentA'},
     {intent: 'IntentB'},
     {intent: 'IntentC'},
-    {intent: 'e'},
+    {intent: 'Async'},
     {intent: 'AnotherCardIntentSample'},
     {intent: 'IntentWithoutUtterances'}
   ]
@@ -30,18 +29,17 @@ exports.utterances = [
   'FirstIntent utterance',
   'NamedIntent utteranceB',
   'NamedIntent utteranceC',
-  'a utterance for intent without name',
-  'b multiple',
-  'b utterances',
-  'c I am {age} years old',
-  'd My name is {name}',
+  'Multiple multiple',
+  'Multiple utterances',
+  'Age I am {age} years old',
+  'Name My name is {name}',
   'AMAZON.StopIntent one utterance',
   'AMAZON.HelpIntent two utterances',
   'AMAZON.HelpIntent yup',
   'IntentA another utterance',
   'IntentB another utterance',
   'IntentC another utterance',
-  'e async response',
+  'Async async response',
   'AnotherCardIntentSample card intent'
 ];
 

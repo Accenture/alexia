@@ -1,6 +1,5 @@
 'use strict';
 const _ = require('lodash');
-const bases = require('bases');
 const builtInIntentsMap = require('./built-in-intents-map');
 const validator = require('./validator');
 const parseError = require('./error-handler').parseError;
@@ -17,12 +16,11 @@ module.exports = (intents, name, richUtterances, handler) => {
   // Convert utterances to array
   richUtterances = _.isArray(richUtterances) ? richUtterances : [richUtterances];
 
-  // If intent name is not specified, try to generate unique one
   if (!name) {
-    name = generateIntentName(intents);
-
+    const e = parseError(new Error(`All intents must have name.`));
+    throw e;
   } else if (!validator.isNameValid(name)) {
-    const e = parseError(new Error(`Intent name ${name} is invalid. Only lowercase and uppercase letters are allowed`));
+    const e = parseError(new Error(`Intent name ${name} is invalid. Only lowercase and uppercase letters are allowed.`));
     throw e;
   } else if (builtInIntentsMap[name]) {
     // If built-in intent name was used map intent name to it
@@ -41,14 +39,4 @@ module.exports = (intents, name, richUtterances, handler) => {
     utterances: utterances,
     handler: handler
   };
-};
-
-const generateIntentName = (intents) => {
-  let position = 0;
-  let generatedName;
-
-  // While generated name is not already used and generatedName is not built-in intent (just in case)
-  while (intents[(generatedName = bases.toBase52(position++))] && !builtInIntentsMap[generatedName]);
-
-  return generatedName;
 };
