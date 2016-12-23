@@ -14,22 +14,18 @@ app.intent('NamedIntent', ['utteranceB', 'utteranceC'], () => {
   return 'All good';
 });
 
-app.intent(null, 'utterance for intent without name', () => {
-  return 'All good sir';
-});
-
-app.intent(null, ['multiple', 'utterances'], () => {
+app.intent('Multiple', ['multiple', 'utterances'], () => {
   return {
     text: 'All good sir again'
   };
 });
 
-app.intent(null, 'I am {age:Number} years old', (slots) => {
+app.intent('Age', 'I am {age:Number} years old', (slots) => {
   return `okay sir you are ${slots.age} years old`;
 });
 
 app.customSlot('Name', ['Borimir', 'Vlasto']);
-app.intent(null, 'My name is {name:Name}', (slots) => {
+app.intent('Name', 'My name is {name:Name}', (slots) => {
   return `okay sir your name is ${slots.name}`;
 });
 
@@ -71,7 +67,7 @@ app.intent('IntentC', 'another utterance', (slots, attrs) => {
   };
 });
 
-app.intent(null, 'async response', (slots, attrs, data, done) => {
+app.intent('Async', 'async response', (slots, attrs, data, done) => {
   setTimeout(() => {
     done('I just did stuff asynchronously. Thank you for this opportunity');
   }, 120);

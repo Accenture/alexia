@@ -26,7 +26,6 @@
     "toc": "doctoc README.md --github"
   },
   "dependencies": {
-    "bases": "^0.2.1",
     "debug": "^2.3.0",
     "doctoc": "^1.2.0",
     "glob": "^7.1.1",

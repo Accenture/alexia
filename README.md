@@ -125,14 +125,11 @@ app.setShouldEndSessionByDefault(true);
 
 ### Create Intents
 
-You have multiple options for creating intents. You can create named intents, intents with automatically generated name or intents with multiple sample utterances.
+You have to give a name for the intent when you are creating it. Also you can set multiple utterances for any of your intents.
 
 ```javascript
 // Named intent
 app.intent('MyIntent', 'Hello Alexa my name is Michael', () => 'Hi Michael');
-
-// Generated intent name
-app.intent(null, 'Hello Alexa what is in my calendar for today', () => 'Your calendar is empty. Enjoy');
 
 // Intent with more utterances
 app.intent('AnotherIntent', ['Hello', 'Hi', 'Whats up'], () => 'Hello yourself');

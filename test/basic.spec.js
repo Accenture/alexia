@@ -85,7 +85,7 @@ describe('basic app handler', () => {
   });
 
   it('should handle intent with slots', (done) => {
-    const request = alexia.createIntentRequest(intents[5].name, {name: 'Borimir'}, null, false, 'appId1');
+    const request = alexia.createIntentRequest(intents[4].name, {name: 'Borimir'}, null, false, 'appId1');
 
     app.handle(request, (response) => {
       expect(response.response.outputSpeech.text).equal('okay sir your name is Borimir');
@@ -126,8 +126,8 @@ describe('basic app handler', () => {
     });
   });
 
-  it('should handle async intent', (done) => {
-    const request = alexia.createIntentRequest(intents[12].name, null, null, false, 'appId1');
+  it('should handle Async intent', (done) => {
+    const request = alexia.createIntentRequest(intents[11].name, null, null, false, 'appId1');
 
     app.handle(request, (response) => {
       expect(response.response.outputSpeech.text).equal('I just did stuff asynchronously. Thank you for this opportunity');
@@ -224,13 +224,23 @@ describe('basic app handler', () => {
     }
   });
 
+  it('should not create intent without name', () => {
+    try {
+      const app2 = alexia.createApp('App2');
+      app2.intent(null, 'Name', () => 'Must have name');
+      throw new Error('Name of intent was not specified.');
+    } catch (e) {
+      expect(e).to.include('All intents must have name.');
+    }
+  });
+
   it('should not create intent with invalid name', () => {
     try {
       const app2 = alexia.createApp('App2');
       app2.intent('Mega -.- Intent o/', 'Hi', () => 'Nope bye');
       throw new Error('App was handled with invalid intent name');
     } catch (e) {
-      expect(e).to.include('Intent name Mega -.- Intent o/ is invalid. Only lowercase and uppercase letters are allowed');
+      expect(e).to.include('Intent name Mega -.- Intent o/ is invalid. Only lowercase and uppercase letters are allowed.');
     }
   });
 
@@ -298,5 +308,4 @@ describe('basic app handler', () => {
       done();
     });
   });
-
 });
