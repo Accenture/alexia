@@ -78,7 +78,7 @@ Alexia helps you to write Amazon Echo skills using Node.js. This framework handl
 - [Create Alexa skill](#create-alexa-skill)
 - [Testing](#testing)
   - [Device Testing](#device-testing)
-  - [Echoism.io (Online Simulator)](#echoismio-online-simulator)
+  - [Echosim.io (Online Simulator)](#echosimio-online-simulator)
   - [Unit Testing](#unit-testing)
 - [Debugging](#debugging)
 - [Scripts](#scripts)
@@ -521,9 +521,9 @@ exports.handler = (event, context, callback) => {
 - Enable application for testing
 - Say `Alexa, start <myApp>`
 
-### Echoism.io (Online Simulator)
+### Echosim.io (Online Simulator)
 
-- Open [Echoism.io](https://echosim.io/)
+- Open [Echosim.io](https://echosim.io/)
 - Login with your Amazon developer account
 - Interact with Alexa simulator
 
