@@ -59,7 +59,7 @@ const genIntentSchemaAndUtterances = (app, locale) => {
     // Transform intent utterances to array if its string
     let intentUtterances = _.isArray(intentResource.utterances) ? intentResource.utterances : [intentResource.utterances];
 
-    // Parse rich utterances to extract slot types and transform utterances to simle form
+    // Parse rich utterances to extract slot types and transform utterances to simple form
     parseRichUtterances(intentUtterances, slots, utterances);
 
     // Slots found
