@@ -12,20 +12,21 @@ const info = require('debug')('alexia:info');
  */
 module.exports = (app, options) => {
   const Hapi = require('hapi');
-  const server = new Hapi.Server();
 
   options = Object.assign({}, options);
 
-  server.connection({
+  const server = new Hapi.Server({
     port: options.port || process.env.PORT || 8888
   });
 
   server.route({
     path: options.path || '/',
     method: 'POST',
-    handler: (request, response) => {
-      app.handle(request.payload, (data) => {
-        response(data);
+    handler: (request, h) => {
+      return new Promise((resolve) => {
+        app.handle(request.payload, (data) => {
+          resolve(h.response(data));
+        });
       });
     }
   });

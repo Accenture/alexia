@@ -373,7 +373,7 @@ These are the steps required to localize your existing application:
 2. Initialize `i18next` instance - see [the example app](examples/multi-language/multi-language-app.js)
 3. Set `i18next` instance to your app to enable localization: `app.setI18next(i18next)`
 4. Create directory with all locales
-5. Ommit utterances in all intents and access the translate function using `app.t('key')` 
+5. Ommit utterances in all intents and access the translate function using `app.t('key')`
 
 Localized intent example:
 
@@ -425,28 +425,33 @@ You can create your own HTTP from scratch to handle Amazon requests manually. Se
 
 ```javascript
 const Hapi = require('hapi');
-const server = new Hapi.Server();
 const app = require('./app'); // Your app
 
-server.connection({
+const server = new Hapi.Server({
   port: process.env.PORT || 8888
 });
 
 server.route({
   path: '/',
   method: 'POST',
-  handler: (request, response) => {
-    app.handle(request.payload, (data) => {
-      response(data);
+  handler: (request, h) => {
+    return new Promise((resolve) => {
+      app.handle(request.payload, (data) => {
+        resolve(h.response(data));
+      });
     });
   }
 });
 
-server.start((err) => {
-  if (err) throw err;
-  console.log('Server running at:', server.info.uri);
-  app.saveSpeechAssets();
-});
+server.start()
+  .then(() => {
+    console.log(`Server running at: ${server.info.uri}`);
+    // app.saveSpeechAssets();
+  })
+  .catch(error => {
+    console.error(error);
+    throw error;
+  });
 ```
 
 ## Deploy
@@ -578,7 +583,7 @@ describe('(Intent) MyIntent', () => {
 
     // Simulate Alexa request handling
     app.handle(intentRequest, response => {
-      
+
       // Test the response
       expect(response).to.be.defined;
       done();
