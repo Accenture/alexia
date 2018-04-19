@@ -373,7 +373,7 @@ These are the steps required to localize your existing application:
 2. Initialize `i18next` instance - see [the example app](examples/multi-language/multi-language-app.js)
 3. Set `i18next` instance to your app to enable localization: `app.setI18next(i18next)`
 4. Create directory with all locales
-5. Ommit utterances in all intents and access the translate function using `app.t('key')` 
+5. Omit utterances in all intents and access the translate function using `app.t('key')`
 
 Localized intent example:
 
@@ -400,7 +400,7 @@ Localization notes:
 - To localize built in intents, say `AMAZON.YesIntent` use entry names after the `.` suffix. So `AMAZON.YesIntent` becomes just `YesIntent`
 - To access the translation use: `app.t('key')` This `key` needs to be nested in the current intent translation entry. You don't have to use the full path to the key - the prefix is automatically added depending on the current request
 - Each intent translation should have `utterances` property. We support the `richUtterances` syntax f.e: `My age is {age:Number}`
-- The locale to be used is decided depending on the `data.request.locale` Its value could be currently one of: `en-US`, `en-GB`, `de-DE`
+- The locale to be used is decided depending on the `data.request.locale` Its value could be currently one of: `en-US`, `en-GB`, `en-CA`, `en-IN`, `en-AU`, `de-DE`, `fr-FR`, `ja-JP`
 
 ### Handling Amazon Requests
 
@@ -454,13 +454,15 @@ server.start((err) => {
 ### Heroku
 
  1. Create free [Heroku](https://www.heroku.com) acount
- 2. Install [Heroku toolbelt](https://toolbelt.heroku.com/)
+ 2. Install [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+    - ensure that you don’t have the legacy Heroku Toolbelt or Heroku Ruby gem installed
  3. Be sure to have `start` script defined in `package.json`
  4. Be sure to create server handler on POST endpoint. See [Handling Amazon Requests](#handling-amazon-requests)
  5. Run `git init` if git was not yet initialized in your project
- 6. Run `heroku create` in project directory
- 7. Run `git push heroku master`
- 8. Copy your server URL to your Alexa Skill configuration. See [Create Alexa Skill](#create-alexa-skill)
+ 6. Be sure to `heroku login` and enter your credentials
+ 7. Run `heroku create` in project directory
+ 8. Run `git push heroku master`
+ 9. Copy your server URL to your Alexa Skill configuration. See [Create Alexa Skill](#create-alexa-skill)
 
 ### AWS Lambda
 
@@ -578,7 +580,7 @@ describe('(Intent) MyIntent', () => {
 
     // Simulate Alexa request handling
     app.handle(intentRequest, response => {
-      
+
       // Test the response
       expect(response).to.be.defined;
       done();
