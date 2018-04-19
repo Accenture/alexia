@@ -425,28 +425,30 @@ You can create your own HTTP from scratch to handle Amazon requests manually. Se
 
 ```javascript
 const Hapi = require('hapi');
-const server = new Hapi.Server();
 const app = require('./app'); // Your app
 
-server.connection({
+const server = Hapi.server({
   port: process.env.PORT || 8888
 });
 
 server.route({
   path: '/',
   method: 'POST',
-  handler: (request, response) => {
-    app.handle(request.payload, (data) => {
-      response(data);
+  handler: (request, h) => {
+    return new Promise((resolve) => {
+      app.handle(request.payload, (data) => {
+        resolve(h.response(data));
+      });
     });
   }
 });
 
-server.start((err) => {
-  if (err) throw err;
-  console.log('Server running at:', server.info.uri);
-  app.saveSpeechAssets();
-});
+server.start()
+  .then(() => {
+    console.log(`Server running at: ${server.info.uri}`);
+    // app.saveSpeechAssets();
+  })
+  .catch(console.error);
 ```
 
 ## Deploy
