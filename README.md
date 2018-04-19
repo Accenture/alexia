@@ -448,10 +448,7 @@ server.start()
     console.log(`Server running at: ${server.info.uri}`);
     // app.saveSpeechAssets();
   })
-  .catch(error => {
-    console.error(error);
-    throw error;
-  });
+  .catch(console.error);
 ```
 
 ## Deploy
