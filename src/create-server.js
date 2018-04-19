@@ -15,7 +15,7 @@ module.exports = (app, options) => {
 
   options = Object.assign({}, options);
 
-  const server = new Hapi.Server({
+  const server = Hapi.server({
     port: options.port || process.env.PORT || 8888
   });
 

@@ -427,7 +427,7 @@ You can create your own HTTP from scratch to handle Amazon requests manually. Se
 const Hapi = require('hapi');
 const app = require('./app'); // Your app
 
-const server = new Hapi.Server({
+const server = Hapi.server({
   port: process.env.PORT || 8888
 });
 

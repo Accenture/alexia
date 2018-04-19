@@ -30,8 +30,28 @@ describe('server', () => {
     app.handle.restore();
   });
 
+  it('should ensure expected route is defined on Hapi server', (done) => {
+    const server = app.createServer({
+      path: '/skill'
+    });
+
+    server.inject({
+      url: '/skill',
+      method: 'POST',
+      payload: mockRequest
+    })
+    .then(response => {
+      expect(response.statusCode).to.deep.equal(200);
+      expect(response.headers).to.contain.keys('content-type', 'content-length');
+      expect(JSON.parse(response.payload)).to.deep.equal(mockResponse);
+    })
+    .then(() => done())
+    .catch(done);
+
+  });
+
   it('should create working Hapi server', (done) => {
-    const server = app.createServer(app);
+    const server = app.createServer();
 
     server.start()
       .then(() => {
@@ -45,7 +65,6 @@ describe('server', () => {
       .then(() => server.stop())
       .then(() => done())
       .catch(done);
-
   });
 
 });
